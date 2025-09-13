@@ -13,19 +13,43 @@ import {
 } from "@/components/ui/popover";
 import { Link, NavLink } from "react-router";
 import { ModeToggle } from "../DarkAndLightMode/mode-toggle";
+import { authApi, useLogoutMutation, useUserInfoQuery } from "@/Redux/features/auth/auth.api";
+import { useAppDispatch } from "@/Redux/hooks";
+import { toast } from "sonner";
+import { role } from "@/constants/role";
+// import { role } from "@/constants/role";
+
+
+
 
 
 // Navigation links array to be used in both desktop and mobile menus
 const navigationLinks = [
-  { href: "/", label: "Home",  },
-  { href: "/features", label: "Features" },
-  { href: "/pricing", label: "Pricing" },
-  { href: "/about", label: "About" },
-  { href: "/contact", label: "Contact" },
-  { href: "/faq", label: "FAQ" },
+  { href: "/", label: "Home", role:"PUBLIC" },
+  { href: "/features", label: "Features" , role:"PUBLIC" },
+  { href: "/about", label: "About"  , role:"PUBLIC"},
+  { href: "/contact", label: "Contact" , role:"PUBLIC"},
+  { href: "/faq", label: "FAQ" , role:"PUBLIC"},
+    { href: "/admin", label: "Dashboard", role: role.admin },
+  { href: "/agent", label: "Dashboard", role: role.agent },
+  { href: "/user", label: "Dashboard", role: role.user},
 ];
 
+
+
 export default function Navbar() {
+   const [logout]=useLogoutMutation()
+  const { data } = useUserInfoQuery(undefined);
+    const dispatch=useAppDispatch()
+const LogOuthandel = async () => {
+  try {
+    await logout(undefined).unwrap();
+    dispatch(authApi.util.resetApiState()); 
+    toast.success("LogOut in successfully");
+  } catch (err) {
+    console.error("Logout failed", err);
+  }
+};
   return (
     <header className="border-b px-4 md:px-6">
       <div className="flex h-16 items-center justify-between gap-4">
@@ -109,16 +133,28 @@ export default function Navbar() {
             <NavigationMenu className="max-md:hidden px-[150px]">
               <NavigationMenuList className="gap-5">
                 {navigationLinks.map((link, index) => (
-                  <NavigationMenuItem key={index}>
-                    <NavigationMenuLink
-               
-                      href={link.href}
-                      asChild
-                      className="text-muted-foreground text-[16px]   hover:text-primary py-1.5  font-medium"
-                    >
-                      <NavLink to={link.href}>{link.label}</NavLink>
-                    </NavigationMenuLink>
-                  </NavigationMenuItem>
+                  <>
+                    {link.role === "PUBLIC" && (
+                      <NavigationMenuItem key={index}>
+                        <NavigationMenuLink
+                          asChild
+                          className="text-muted-foreground hover:text-primary py-1.5 font-medium"
+                        >
+                          <Link to={link.href}>{link.label}</Link>
+                        </NavigationMenuLink>
+                      </NavigationMenuItem>
+                    )}
+                    {link.role === data?.data?.role && (
+                      <NavigationMenuItem key={index}>
+                        <NavigationMenuLink
+                          asChild
+                          className="text-muted-foreground hover:text-primary py-1.5 font-medium"
+                        >
+                          <Link to={link.href}>{link.label}</Link>
+                        </NavigationMenuLink>
+                      </NavigationMenuItem>
+                    )}
+                  </>
                 ))}
               </NavigationMenuList>
             </NavigationMenu>
@@ -126,9 +162,14 @@ export default function Navbar() {
         </div>
         {/* Right side */}
         <div className="flex items-center gap-2">
-          <Button asChild size="sm" className="text-sm">
+        {  data?.data?.email && <Button onClick={LogOuthandel} className="text-sm cursor-pointer" >
+         Logout
+        </Button>}
+       {
+        !data?.data?.email &&   <Button  className="text-sm cursor-pointer">
             <Link to="/login"> Sign In</Link>
           </Button>
+       }
           <ModeToggle />
         </div>
       </div>

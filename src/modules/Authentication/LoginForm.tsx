@@ -174,7 +174,7 @@ export default function LoginPage() {
               {/* Submit */}
               <Button
                 type="submit"
-                className="w-full"
+                className="w-full cursor-pointer"
                 disabled={!form.watch("remember")}
               >
                 Login
@@ -193,11 +193,15 @@ export default function LoginPage() {
           </div>
 
           {/* Google login */}
-          <Button
-            onClick={() => window.open(`${config.baseUrl}/auth/google`)}
+   
+            <Button
+            onClick={() => {
+              window.location.href = `${config.baseUrl}/auth/google`;
+              toast.success("Google login  successfully");
+            }}
             type="button"
             variant="outline"
-            className="w-full"
+            className="w-full cursor-pointer"
           >
             Login with Google
           </Button>
@@ -207,7 +211,7 @@ export default function LoginPage() {
             Don’t have an account?{" "}
             <Link
               to="/register"
-              className="underline underline-offset-4 hover:text-primary"
+              className="underline cursor-pointer underline-offset-4 hover:text-primary"
             >
               Register
             </Link>
