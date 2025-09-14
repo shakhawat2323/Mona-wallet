@@ -6,7 +6,7 @@ import About from "@/components/pages/About";
 import Contact from "@/components/pages/Contact";
 import FAQ from "@/components/pages/FAQ";
 import Features from "@/components/pages/Features";
-import Pricing from "@/components/pages/Pricing";
+
 import { role } from "@/constants/role";
 
 import Verify from "@/modules/Authentication/verify";
@@ -20,6 +20,7 @@ import RegisterPage from "@/modules/Authentication/RegisterForm";
 import { adminSidebarItems } from "./adminSidebarItems";
 import { userSidebarItems } from "./userSidebarItems";
 import Unauthorized from "@/components/pages/Unauthorized";
+import { agentSidebarItems } from "./agentSidebarItems";
 
 export const router = createBrowserRouter([
   {
@@ -42,10 +43,7 @@ export const router = createBrowserRouter([
         Component: Features,
         path: "/features",
       },
-      {
-        Component: Pricing,
-        path: "/pricing",
-      },
+  
     ],
   },
   {
@@ -54,6 +52,14 @@ export const router = createBrowserRouter([
     children: [
       { index: true, element: <Navigate to="/admin/analytics" replace /> },
       ...generateRoutes(adminSidebarItems),
+    ],
+  },
+  {
+    Component: withAuth(DashboardLayout, role.agent as TRole),
+    path: "/agent",
+    children: [
+      { index: true, element: <Navigate to="/agent/overview" replace /> },
+      ...generateRoutes(agentSidebarItems),
     ],
   },
   {

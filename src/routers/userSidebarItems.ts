@@ -42,22 +42,12 @@ export const userSidebarItems: ISidebarItem[] = [
         icon: Send,
         component: SendMoney,
       },
-    ],
-  },
-  {
-    title: "Transactions",
-    items: [
       {
         title: "History",
         url: "/user/transactions",
         icon: History,
         component: Transactions,
       },
-    ],
-  },
-  {
-    title: "Account",
-    items: [
       {
         title: "Profile",
         url: "/user/profile",
