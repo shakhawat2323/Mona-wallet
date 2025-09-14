@@ -1,14 +1,68 @@
-import Bookings from "@/components/pages/Admin/Bookings";
+import { Home, Download, Upload, Send, History, User } from "lucide-react";
+
+import Deposit from "@/components/pages/User/Deposit";
+import Withdraw from "@/components/pages/User/Withdraw";
+import SendMoney from "@/components/pages/User/SendMoney";
+import Transactions from "@/components/pages/User/Transactions";
+import Profile from "@/components/pages/User/Profile";
+
 import type { ISidebarItem } from "@/Types";
+import Overview from "@/components/pages/User/Overview";
 
 export const userSidebarItems: ISidebarItem[] = [
   {
-    title: "History",
+    title: "Dashboard",
     items: [
       {
-        title: "Bookings",
-        url: "/user/bookings",
-        component: Bookings,
+        title: "Overview",
+        url: "/user/overview",
+        icon: Home,
+        component: Overview,
+      },
+    ],
+  },
+  {
+    title: "Wallet",
+    items: [
+      {
+        title: "Deposit Money",
+        url: "/user/deposit",
+        icon: Download,
+        component: Deposit,
+      },
+      {
+        title: "Withdraw Money",
+        url: "/user/withdraw",
+        icon: Upload,
+        component: Withdraw,
+      },
+      {
+        title: "Send Money",
+        url: "/user/send-money",
+        icon: Send,
+        component: SendMoney,
+      },
+    ],
+  },
+  {
+    title: "Transactions",
+    items: [
+      {
+        title: "History",
+        url: "/user/transactions",
+        icon: History,
+        component: Transactions,
+      },
+    ],
+  },
+  {
+    title: "Account",
+    items: [
+      {
+        title: "Profile",
+        url: "/user/profile",
+        icon: User,
+        component: Profile,
       },
     ],
   },
