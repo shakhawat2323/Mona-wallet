@@ -1,42 +1,42 @@
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import PhoneImg from "../../../assets/images/Phone.webp"; // তোমার phone img path
+import PhoneImg from "../../../assets/images/Phone.webp";
 
 export default function RegistrationSection() {
   return (
-    <section className="relative bg-[#0B0B16] text-white py-20 px-6 md:px-20 overflow-hidden">
-      {/* Gradient Circle Background (using ::before) */}
-      <div className="absolute top-[38%]  left-[73%] -translate-x-1/2 -translate-y-1/2 lg:w-[550px] lg:h-[550px] rounded-full bg-gradient-to-tr from-[#836DD6] to-[#ffa37b] z-0"></div>
+    <section className="relative bg-background text-foreground py-20 px-6 md:px-20 overflow-hidden">
+      {/* Gradient Circle Background */}
+      <div className="absolute top-[38%] left-[73%] -translate-x-1/2 -translate-y-1/2 lg:w-[550px] lg:h-[550px] rounded-full bg-gradient-to-tr from-purple-600/40 to-pink-400/30 blur-3xl z-0"></div>
 
       <div className="relative z-10 grid md:grid-cols-2 items-center gap-12">
         {/* Left Content */}
-        <motion.div className=""
+        <motion.div
           initial={{ x: -100, opacity: 0 }}
           whileInView={{ x: 0, opacity: 1 }}
           transition={{ duration: 0.8 }}
           viewport={{ once: true }}
         >
-          <h1 className="text-4xl  md:text-5xl font-extrabold leading-tight">
-            Our Easy Steps For{" "}
+          <h1 className="text-4xl md:text-5xl font-extrabold leading-tight">
+            Get Started With{" "}
             <span className="bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent">
-              Registration
+              Quick Registration
             </span>
           </h1>
-          <p className="mt-4 text-gray-400">
-            Lorem Ipsum is simply dummy text of the printing and typesetting
-            industry. Lorem Ipsum has been the industry's standard dummy text
-            ever since the 1500s.
+          <p className="mt-4 text-muted-foreground">
+            Open your digital wallet in just a few simple steps. 
+            Sign up securely, set up your profile, and enjoy 
+            instant access to payments, transfers, and more.
           </p>
 
           {/* Steps */}
           <div className="mt-6 grid grid-cols-2 gap-4 text-sm">
             {[
-              "Sign in with ID Card",
-              "User Configuration",
-              "Select Country Location",
-              "Enter the Transaction",
-              "Enjoy Full Access",
-              "Enter the Transaction",
+              "Verify your ID",
+              "Set up your profile",
+              "Select your country",
+              "Add your first funds",
+              "Start sending money",
+              "Access full features",
             ].map((step, index) => (
               <motion.div
                 key={index}
@@ -46,7 +46,7 @@ export default function RegistrationSection() {
                 viewport={{ once: true }}
                 className="flex items-center gap-2"
               >
-                <span className="w-5 h-5 flex items-center justify-center rounded-full bg-gradient-to-r from-purple-500 to-pink-500">
+                <span className="w-5 h-5 flex items-center justify-center rounded-full bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs">
                   ✓
                 </span>
                 {step}
@@ -59,8 +59,8 @@ export default function RegistrationSection() {
             <Button className="px-6 py-3 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:opacity-90">
               Register Now
             </Button>
-            <Button className="px-6 py-3 rounded-full border border-purple-500 bg-transparent hover:bg-purple-600">
-              Get Started
+            <Button className="px-6 py-3 rounded-full border border-purple-500 bg-transparent text-foreground hover:bg-purple-600 hover:text-white">
+              Learn More
             </Button>
           </div>
         </motion.div>
@@ -71,7 +71,7 @@ export default function RegistrationSection() {
           whileInView={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.8 }}
           viewport={{ once: true }}
-          className="flex justify-center   relative"
+          className="flex justify-center relative"
         >
           <img
             src={PhoneImg}
@@ -85,10 +85,10 @@ export default function RegistrationSection() {
             whileInView={{ x: 0, opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.4 }}
             viewport={{ once: true }}
-            className="absolute top-10 right-0 bg-[#1E1E2E] px-4 py-3 rounded-xl shadow-lg"
+            className="absolute top-10 right-0 bg-card text-card-foreground px-4 py-3 rounded-xl shadow-lg"
           >
-            <p className="text-xs text-gray-400">Incomes</p>
-            <p className="font-bold">$2,750.5</p>
+            <p className="text-xs text-muted-foreground">Incomes</p>
+            <p className="font-bold">$2,750.50</p>
           </motion.div>
 
           <motion.div
@@ -96,10 +96,10 @@ export default function RegistrationSection() {
             whileInView={{ x: 0, opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.6 }}
             viewport={{ once: true }}
-            className="absolute bottom-10 right-0 bg-[#1E1E2E] px-4 py-3 rounded-xl shadow-lg"
+            className="absolute bottom-10 right-0 bg-card text-card-foreground px-4 py-3 rounded-xl shadow-lg"
           >
-            <p className="text-xs text-gray-400">Expenses</p>
-            <p className="font-bold">$1,240.8</p>
+            <p className="text-xs text-muted-foreground">Expenses</p>
+            <p className="font-bold">$1,240.80</p>
           </motion.div>
         </motion.div>
       </div>

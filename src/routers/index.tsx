@@ -21,12 +21,20 @@ import { adminSidebarItems } from "./adminSidebarItems";
 import { userSidebarItems } from "./userSidebarItems";
 import Unauthorized from "@/components/pages/Unauthorized";
 import { agentSidebarItems } from "./agentSidebarItems";
+import Home from "@/components/pages/Home/Home";
 
 export const router = createBrowserRouter([
   {
     Component: App,
     path: "/",
     children: [
+      {
+           
+        Component: Home,
+        index: true,
+      
+
+      },
       {
         Component: Contact,
         path: "/contact",

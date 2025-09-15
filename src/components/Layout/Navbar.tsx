@@ -30,7 +30,7 @@ const navigationLinks = [
   { href: "/about", label: "About"  , role:"PUBLIC"},
   { href: "/contact", label: "Contact" , role:"PUBLIC"},
   { href: "/faq", label: "FAQ" , role:"PUBLIC"},
-    { href: "/admin", label: "Dashboard", role: role.admin },
+  { href: "/admin", label: "Dashboard", role: role.admin },
   { href: "/agent", label: "Dashboard", role: role.agent },
   { href: "/user", label: "Dashboard", role: role.user},
 ];
@@ -51,7 +51,11 @@ const LogOuthandel = async () => {
   }
 };
   return (
-    <header className="border-b px-4 md:px-6">
+    <header className="border-b px-4 md:px-6          sticky top-0 z-50 w-full 
+       border-border
+        bg-background/70 backdrop-blur-md
+        supports-[backdrop-filter]:bg-background/60
+        transition-colors">
       <div className="flex h-16 items-center justify-between gap-4">
         {/* Left side */}
         <div className="flex items-center gap-2">
@@ -133,7 +137,7 @@ const LogOuthandel = async () => {
             <NavigationMenu className="max-md:hidden px-[150px]">
               <NavigationMenuList className="gap-5">
                 {navigationLinks.map((link, index) => (
-                  <>
+                  < div key={index}>
                     {link.role === "PUBLIC" && (
                       <NavigationMenuItem key={index}>
                         <NavigationMenuLink
@@ -154,7 +158,7 @@ const LogOuthandel = async () => {
                         </NavigationMenuLink>
                       </NavigationMenuItem>
                     )}
-                  </>
+                  </div>
                 ))}
               </NavigationMenuList>
             </NavigationMenu>

@@ -2,9 +2,15 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import Cards from "../../../assets/images/Hero.webp";
 
-export default function PaymentSection() {
+export default function Hero() {
   return (
-    <section className="bg-[#0B0B16] text-white py-20 px-6 md:px-20 flex flex-col md:flex-row items-center justify-between gap-10">
+    <section
+      className="
+        theme-orange
+        bg-background text-foreground
+        py-20 px-6 md:px-20 flex flex-col md:flex-row items-center justify-between gap-10
+      "
+    >
       {/* Left Content */}
       <motion.div
         initial={{ x: -100, opacity: 0 }}
@@ -15,17 +21,23 @@ export default function PaymentSection() {
       >
         <h1 className="text-4xl md:text-5xl font-extrabold leading-tight">
           The Ultimate{" "}
-          <span className="bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent">
+          <span className="bg-gradient-to-r from-orange-500 to-orange-700 bg-clip-text text-transparent">
             Online Payment
           </span>{" "}
           Solution
         </h1>
-        <p className="text-gray-400 mt-5">
+        <p className="mt-5 text-muted-foreground">
           Manage your money smarter with our secure digital wallet. Send, receive 
           and store funds instantly — all in one place. Experience faster, safer 
           and more convenient transactions anytime, anywhere.
         </p>
-        <Button className="mt-5 px-6 py-5 rounded-full dark:text-white bg-transparent border border-purple-500 hover:bg-purple-600 hover:border-purple-600 transition">
+        <Button
+          className="
+            mt-5 px-6 py-5 rounded-full
+            bg-primary text-primary-foreground
+            hover:bg-orange-600 transition
+          "
+        >
           Get Started
         </Button>
       </motion.div>
@@ -40,9 +52,9 @@ export default function PaymentSection() {
       >
         {/* Cards */}
         <div className="relative w-72 h-44">
-          {/* Purple Circle Overlay */}
+          {/* Orange Circle Overlay */}
           <div className="absolute inset-0 flex items-center justify-center">
-            <div className="w-40 h-40 rounded-full bg-purple-500/40 blur-3xl"></div>
+            <div className="w-40 h-40 rounded-full bg-orange-500/40 blur-3xl"></div>
           </div>
 
           <motion.img

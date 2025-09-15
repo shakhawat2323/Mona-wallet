@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 import {
   Card,
@@ -21,34 +22,35 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui/tabs";
-
-const fakeTransactions = [
-  { id: 1, user: "Rahim", amount: 500, type: "Cash In", date: "2025-09-14" },
-  { id: 2, user: "Karim", amount: 200, type: "Withdraw", date: "2025-09-13" },
-  { id: 3, user: "Jamil", amount: 1000, type: "Send Money", date: "2025-09-12" },
-  { id: 4, user: "Sami", amount: 1500, type: "Cash Out", date: "2025-09-11" },
-  { id: 5, user: "Nadia", amount: 750, type: "Cash In", date: "2025-09-10" },
-];
+import { useGetuserQuery } from "@/Redux/features/auth/user.api";
 
 function getBadge(type: string) {
-  if (type === "Cash In")
-    return <Badge className="bg-green-600/20 text-green-400">Cash In</Badge>;
-  if (type === "Cash Out")
-    return <Badge className="bg-pink-600/20 text-pink-400">Cash Out</Badge>;
-  if (type === "Send Money")
+  if (type === "DEPOSIT")
+    return <Badge className="bg-green-600/20 text-green-400">Add Money</Badge>;
+
+  if (type === "TRANSFER")
     return <Badge className="bg-blue-600/20 text-blue-400">Send Money</Badge>;
-  if (type === "Withdraw")
+
+  if (type === "WITHDRAW")
     return <Badge className="bg-red-600/20 text-red-400">Withdraw</Badge>;
+
   return <Badge className="bg-gray-600/20 text-gray-400">{type}</Badge>;
 }
 
 export default function Transactions() {
+  const { data } = useGetuserQuery(undefined);
+  const transactions = data?.data?.transactions || [];
+
   const filterByType = (type: string) => {
-    if (type === "All") return fakeTransactions;
-    return fakeTransactions.filter((tx) => tx.type === type);
+    if (type === "All") return transactions;
+    if (type === "Add Money") return transactions.filter((tx: any) => tx.type === "DEPOSIT");
+    if (type === "Send Money") return transactions.filter((tx: any) => tx.type === "TRANSFER");
+    if (type === "Withdraw") return transactions.filter((tx: any) => tx.type === "WITHDRAW");
+    return [];
   };
 
-  const tabs = ["All", "Cash In", "Cash Out", "Send Money", "Withdraw"];
+
+  const tabs = ["All", "Add Money", "Send Money", "Withdraw"];
 
   return (
     <div className="p-6 bg-gradient-to-tr from-[#181C2F] via-[#232946] to-[#212133] min-h-screen">
@@ -87,20 +89,20 @@ export default function Transactions() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {filterByType(tab).map((tx) => (
+                    {filterByType(tab).map((tx: any) => (
                       <TableRow
-                        key={tx.id}
+                        key={tx._id}
                         className="border-b border-[#232946] hover:bg-[#21294d]/50"
                       >
                         <TableCell className="text-slate-200 font-medium">
-                          {tx.user}
+                          {tx?.user?.user?.name }
                         </TableCell>
                         <TableCell className="text-slate-300">
                           {tx.amount} BDT
                         </TableCell>
                         <TableCell>{getBadge(tx.type)}</TableCell>
                         <TableCell className="text-slate-400">
-                          {tx.date}
+                          {new Date(tx.createdAt).toLocaleDateString()}
                         </TableCell>
                       </TableRow>
                     ))}
@@ -114,3 +116,4 @@ export default function Transactions() {
     </div>
   );
 }
+
