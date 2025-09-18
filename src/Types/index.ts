@@ -16,7 +16,7 @@ export interface ISidebarItem {
     title: string;
     url: string;
     component: ComponentType;
-    icon?: LucideIcon;
+    icon: LucideIcon;
   }[];
 }
 

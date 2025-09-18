@@ -1,76 +1,4 @@
 
-// import {
-//   Sidebar,
-//   SidebarContent,
-//   SidebarGroup,
-//   SidebarGroupContent,
-//   SidebarGroupLabel,
-//   SidebarHeader,
-//   SidebarMenu,
-//   SidebarMenuButton,
-//   SidebarMenuItem,
-//   SidebarRail,
-// } from "@/components/ui/sidebar"
-// import Logo from "@/assets/Icons/Logo"
-// import Monawallet from "./Layout/Monawallet"
-
-// import { useUserInfoQuery } from "@/Redux/features/auth/auth.api";
-// import { getSidebarItems } from "@/utils/getSidebarItems";
-// import { Link, NavLink } from "react-router";
-
-// export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-//   const { data: userData } = useUserInfoQuery(undefined);
-
-//   const navMain = getSidebarItems(userData?.data?.role);
-
-//   return (
-//     <Sidebar {...props}>
-//       <SidebarHeader>
-//         <div className="flex flex-row justify-center items-center gap-3 py-3">
-//           <Logo />
-//           <Monawallet />
-//         </div>
-//       </SidebarHeader>
-
-//       <SidebarContent className="bg-[#0F1535]">
-//         {navMain.map((group) => (
-//           <SidebarGroup key={group.title}>
-//             <SidebarGroupLabel>{group.title}</SidebarGroupLabel>
-//             <SidebarGroupContent>
-//               <SidebarMenu>
-//                 {group.items.map((item) => (
-//                   <SidebarMenuItem key={item.title}>
-//                     <SidebarMenuButton asChild>
-//                       <Link to={item.url} className="flex items-center gap-2">
-//                         <item.icon className="w-4 h-4" />
-//                         {item.title}
-//                       </Link>
-//                     </SidebarMenuButton>
-//                   </SidebarMenuItem>
-//                 ))}
-//               </SidebarMenu>
-//             </SidebarGroupContent>
-//           </SidebarGroup>
-//         ))}
-//         <div className="flex flex-col justify-center  px-5 gap-5">
-//         <NavLink to="/">Home</NavLink>
-//         <NavLink to="/features">Features</NavLink>
-//         <NavLink to="/about">About</NavLink>
-//         <NavLink to="/contact">Contact</NavLink>
-//         <NavLink to="/faq">FAQ</NavLink>
-//         <NavLink to="/login">LoginPage</NavLink>
-//         <NavLink to="/register">RegisterPage</NavLink>
-//       </div>
-//       </SidebarContent>
-   
-
-//       <SidebarRail />
-
-
-//     </Sidebar>
-//   );
-// }
-// #################### Secend code 
 import {
   Sidebar,
   SidebarContent,
@@ -86,7 +14,7 @@ import {
 import Logo from "@/assets/Icons/Logo"
 import Monawallet from "./Layout/Monawallet"
 
-import { useUserInfoQuery } from "@/Redux/features/auth/auth.api";
+import { authApi, useLogoutMutation, useUserInfoQuery } from "@/Redux/features/auth/auth.api";
 import { getSidebarItems } from "@/utils/getSidebarItems";
 import { Link, NavLink } from "react-router";
 import {
@@ -99,6 +27,10 @@ import {
   UserPlus,
   LogOut,
 } from "lucide-react";
+import { useAppDispatch } from "@/Redux/hooks";
+import { toast } from "sonner";
+
+
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { data: userData } = useUserInfoQuery(undefined);
@@ -114,9 +46,18 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     { title: "Login", url: "/login", icon: LogIn, color: "text-cyan-400" },
     { title: "Register", url: "/register", icon: UserPlus, color: "text-red-400" },
   ];
-    const handleLogout = () => {
-    // example: dispatch(logoutUser())
-    console.log("Logging out...");
+ const [logout]=useLogoutMutation()
+     const dispatch=useAppDispatch()
+  const handleLogout = async () => {
+  try {
+    await logout(undefined).unwrap();
+    dispatch(authApi.util.resetApiState()); 
+    toast.success("LogOut in successfully");
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (err:any) {
+     toast.error("Logout failed",err);
+  }
+
   };
 
   return (
@@ -187,10 +128,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <div className="mb-5 px-3">
           <button
             onClick={handleLogout}
-            className="w-full flex items-center gap-2 px-3 py-2 rounded-lg bg-red-600/20 hover:bg-red-600/30 text-red-400 hover:text-red-300 transition"
+            className="w-full cursor-pointer flex items-center gap-2 px-3 py-2 rounded-lg bg-red-600/20 hover:bg-red-600/30 text-red-400 hover:text-red-300 transition"
           >
             <LogOut className="w-5 h-5" />
             <span className="font-medium">Logout</span>
+
           </button>
         </div>
 

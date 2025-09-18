@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import {
@@ -17,32 +18,63 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { useState } from "react";
 
-const fakeUsers = [
-  { id: 1, name: "Rahim", email: "rahim@mail.com", isBlocked: false, role: "User" },
-  { id: 2, name: "Karim", email: "karim@mail.com", isBlocked: true, role: "Agent" },
-  { id: 3, name: "Jamil", email: "jamil@mail.com", isBlocked: false, role: "User" },
-];
+import { useState } from "react";
+import { Loader2 } from "lucide-react";
+import {
+  useBlockWalletMutation,
+  useGetUserUserQuery,
+  useUnblockWalletMutation,
+} from "@/Redux/features/auth/admin.api";
+
+const ITEMS_PER_PAGE = 5;
 
 export default function ManageUsers() {
-  const [users, setUsers] = useState(fakeUsers);
+  const { data, isLoading, isError } = useGetUserUserQuery(undefined);
+  const [blockWallet] = useBlockWalletMutation();
+  const [unblockWallet] = useUnblockWalletMutation();
 
-  const handleRoleChange = (id: number, newRole: string) => {
-    setUsers((prev) =>
-      prev.map((user) =>
-        user.id === id ? { ...user, role: newRole } : user
-      )
-    );
-    console.log(`User ${id} role updated to: ${newRole}`);
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const users = data?.data || [];
+  const totalPages = Math.ceil(users.length / ITEMS_PER_PAGE);
+  const paginatedUsers = users.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE
+  );
+
+  // 👉 Block / Unblock Handle Function
+  const handleBlockToggle = async (walletId: string, isBlocked: boolean) => {
+    try {
+      console.log("👉 Selected Wallet ID:", walletId);
+
+      if (isBlocked) {
+        await unblockWallet(walletId).unwrap();
+        console.log("✅ Unblocked Wallet:", walletId);
+      } else {
+        await blockWallet(walletId).unwrap();
+        console.log("⛔ Blocked Wallet:", walletId);
+      }
+    } catch (err) {
+      console.error("❌ Failed to update status:", err);
+    }
   };
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-screen text-white">
+        <Loader2 className="animate-spin mr-2" /> Loading users...
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="text-center text-red-400 mt-10">
+        Failed to load users 😢
+      </div>
+    );
+  }
 
   return (
     <div className="p-6 bg-gradient-to-tr from-[#181C2F] via-[#232946] to-[#212133] min-h-screen">
@@ -60,63 +92,80 @@ export default function ManageUsers() {
                 <TableHead className="text-slate-300">Name</TableHead>
                 <TableHead className="text-slate-300">Email</TableHead>
                 <TableHead className="text-slate-300">Status</TableHead>
-                <TableHead className="text-slate-300">Role</TableHead>
                 <TableHead className="text-slate-300">Action</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {users.map((user) => (
-                <TableRow
-                  key={user.id}
-                  className="border-b border-[#232946] hover:bg-[#21294d]/50"
-                >
-                  <TableCell className="text-slate-200 font-medium">
-                    {user.name}
-                  </TableCell>
-                  <TableCell className="text-slate-300">{user.email}</TableCell>
-                  <TableCell>
-                    {user.isBlocked ? (
-                      <Badge className="bg-red-600/20 text-red-400">
-                        Blocked
-                      </Badge>
-                    ) : (
-                      <Badge className="bg-green-600/20 text-green-400">
-                        Active
-                      </Badge>
-                    )}
-                  </TableCell>
-                  <TableCell>
-                    <Select
-                      defaultValue={user.role}
-                      onValueChange={(value) => handleRoleChange(user.id, value)}
-                    >
-                      <SelectTrigger className="w-[120px] bg-[#21294d] text-slate-200 border-[#2d3b69]">
-                        <SelectValue placeholder="Select Role" />
-                      </SelectTrigger>
-                      <SelectContent className="bg-[#1e233d] text-slate-200">
-                        <SelectItem value="User">User</SelectItem>
-                        <SelectItem value="Agent">Agent</SelectItem>
-              
-                      </SelectContent>
-                    </Select>
-                  </TableCell>
-                  <TableCell>
-                    <Button
-                      size="sm"
-                      variant={user.isBlocked ? "secondary" : "destructive"}
-                      className={
-                        user.isBlocked
-                          ? "bg-green-700 hover:bg-green-600 text-white"
-                          : "bg-red-600 hover:bg-red-500"
-                      }
-                    >
-                      {user.isBlocked ? "Unblock" : "Block"}
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ))}
+              {paginatedUsers.map((user: any) => {
+                const walletId = user.wallets?.[0]; // ✅ প্রথম wallet ID
+                const isBlocked = user.status === "BLOCKED"; // বা backend থেকে আলাদা field হলে সেটা use করো
+
+                return (
+                  <TableRow
+                    key={user._id}
+                    className="border-b border-[#232946] hover:bg-[#21294d]/50"
+                  >
+                    <TableCell className="text-slate-200 font-medium">
+                      {user.name}
+                    </TableCell>
+                    <TableCell className="text-slate-300">
+                      {user.email}
+                    </TableCell>
+                    <TableCell>
+                      {isBlocked ? (
+                        <Badge className="bg-red-600/20 text-red-400">
+                          Blocked
+                        </Badge>
+                      ) : (
+                        <Badge className="bg-green-600/20 text-green-400">
+                          Active
+                        </Badge>
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      <Button
+                        size="sm"
+                        disabled={!walletId} // যদি wallet না থাকে
+                        onClick={() =>
+                          handleBlockToggle(walletId, isBlocked)
+                        }
+                        className={
+                          isBlocked
+                            ? "bg-green-700 cursor-pointer hover:bg-green-600 text-white"
+                            : "bg-red-600 cursor-pointer hover:bg-red-500"
+                        }
+                      >
+                        {isBlocked ? "Unblock" : "Block"}
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
             </TableBody>
           </Table>
+
+          {/* ✅ Pagination */}
+          <div className="flex justify-center items-center gap-4 mt-6">
+            <Button
+              size="sm"
+              disabled={currentPage === 1}
+              onClick={() => setCurrentPage((p) => p - 1)}
+              className="bg-[#21294d] cursor-pointer text-slate-300 hover:bg-[#2a3459]"
+            >
+              Prev
+            </Button>
+            <span className="text-slate-300">
+              Page {currentPage} of {totalPages}
+            </span>
+            <Button
+              size="sm"
+              disabled={currentPage === totalPages}
+              onClick={() => setCurrentPage((p) => p + 1)}
+              className="bg-[#21294d] cursor-pointer text-slate-300 hover:bg-[#2a3459]"
+            >
+              Next
+            </Button>
+          </div>
         </CardContent>
       </Card>
     </div>

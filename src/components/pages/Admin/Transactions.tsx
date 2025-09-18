@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+"use client";
 
 import {
   Card,
@@ -21,34 +23,74 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui/tabs";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 
-const fakeTransactions = [
-  { id: 1, user: "Rahim", amount: 500, type: "Cash In", date: "2025-09-14" },
-  { id: 2, user: "Karim", amount: 200, type: "Withdraw", date: "2025-09-13" },
-  { id: 3, user: "Jamil", amount: 1000, type: "Send Money", date: "2025-09-12" },
-  { id: 4, user: "Sami", amount: 1500, type: "Cash Out", date: "2025-09-11" },
-  { id: 5, user: "Nadia", amount: 750, type: "Cash In", date: "2025-09-10" },
-];
+import { useState } from "react";
+import { useGetTransactionsQuery } from "@/Redux/features/auth/admin.api";
 
+// ✅ Badge helper
 function getBadge(type: string) {
-  if (type === "Cash In")
+  if (type === "CASH_IN")
     return <Badge className="bg-green-600/20 text-green-400">Cash In</Badge>;
-  if (type === "Cash Out")
+  if (type === "CASH_OUT")
     return <Badge className="bg-pink-600/20 text-pink-400">Cash Out</Badge>;
-  if (type === "Send Money")
-    return <Badge className="bg-blue-600/20 text-blue-400">Send Money</Badge>;
-  if (type === "Withdraw")
+  if (type === "TRANSFER")
+    return <Badge className="bg-blue-600/20 text-blue-400">Transfer</Badge>;
+  if (type === "WITHDRAW")
     return <Badge className="bg-red-600/20 text-red-400">Withdraw</Badge>;
+  if (type === "DEPOSIT")
+    return <Badge className="bg-yellow-600/20 text-yellow-400">Deposit</Badge>;
   return <Badge className="bg-gray-600/20 text-gray-400">{type}</Badge>;
 }
 
 export default function Transactions() {
-  const filterByType = (type: string) => {
-    if (type === "All") return fakeTransactions;
-    return fakeTransactions.filter((tx) => tx.type === type);
-  };
+  const { data, isLoading, isError } = useGetTransactionsQuery(undefined);
 
-  const tabs = ["All", "Cash In", "Cash Out", "Send Money", "Withdraw"];
+  const transactions = data?.data || [];
+  const [activeTab, setActiveTab] = useState("All");
+
+  // ✅ প্রতি পেজে ১০টা transaction
+  const [page, setPage] = useState(1);
+  const rowsPerPage = 10;
+
+  // ✅ Tabs
+  const tabs = ["All", "CASH_IN", "CASH_OUT", "TRANSFER", "WITHDRAW", "DEPOSIT"];
+
+  // ✅ Filter transactions by tab
+  const filtered = (() => {
+    if (activeTab === "All") return transactions;
+    return transactions.filter((tx: any) => tx.type === activeTab);
+  })();
+
+  // ✅ Pagination calculate
+  const totalPages = Math.ceil(filtered.length / rowsPerPage);
+  const paginated = filtered.slice(
+    (page - 1) * rowsPerPage,
+    page * rowsPerPage
+  );
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-screen text-slate-300">
+        Loading transactions...
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="flex items-center justify-center h-screen text-red-400">
+        Failed to load transactions.
+      </div>
+    );
+  }
 
   return (
     <div className="p-6 bg-gradient-to-tr from-[#181C2F] via-[#232946] to-[#212133] min-h-screen">
@@ -57,57 +99,113 @@ export default function Transactions() {
           <CardTitle className="text-white">Transactions History</CardTitle>
         </CardHeader>
         <CardContent>
-          <Tabs defaultValue="All" className="w-full">
-            {/* Tab Buttons */}
-            <TabsList className="grid grid-cols-5 bg-[#21294d] mb-4">
+          <Tabs
+            value={activeTab}
+            onValueChange={(value) => {
+              setActiveTab(value);
+              setPage(1); // নতুন tab এ গেলে pagination reset হবে
+            }}
+            className="w-full"
+          >
+            {/* ✅ Tab Buttons */}
+            <TabsList className="grid grid-cols-6 bg-[#21294d] mb-4">
               {tabs.map((tab) => (
                 <TabsTrigger
                   key={tab}
                   value={tab}
                   className="data-[state=active]:bg-[#2d3b69] data-[state=active]:text-white text-slate-300"
                 >
-                  {tab}
+                  {tab === "All" ? "All" : tab.replace("_", " ")}
                 </TabsTrigger>
               ))}
             </TabsList>
 
-            {/* Tab Content */}
-            {tabs.map((tab) => (
-              <TabsContent key={tab} value={tab}>
-                <Table>
-                  <TableCaption className="text-slate-400">
-                    {tab} transactions list
-                  </TableCaption>
-                  <TableHeader>
-                    <TableRow className="border-b border-[#232946]">
-                      <TableHead className="text-slate-300">User</TableHead>
-                      <TableHead className="text-slate-300">Amount</TableHead>
-                      <TableHead className="text-slate-300">Type</TableHead>
-                      <TableHead className="text-slate-300">Date</TableHead>
+            {/* ✅ Table */}
+            <TabsContent value={activeTab}>
+              <Table>
+                <TableCaption className="text-slate-400">
+                  {activeTab} transactions list
+                </TableCaption>
+                <TableHeader>
+                  <TableRow className="border-b border-[#232946]">
+                    <TableHead className="text-slate-300">User</TableHead>
+                    <TableHead className="text-slate-300">Amount</TableHead>
+                    <TableHead className="text-slate-300">Type</TableHead>
+                    <TableHead className="text-slate-300">Date</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {paginated.length === 0 ? (
+                    <TableRow>
+                      <TableCell
+                        colSpan={4}
+                        className="text-center text-slate-400"
+                      >
+                        No transactions found.
+                      </TableCell>
                     </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {filterByType(tab).map((tx) => (
+                  ) : (
+                    paginated.map((tx: any) => (
                       <TableRow
-                        key={tx.id}
+                        key={tx._id}
                         className="border-b border-[#232946] hover:bg-[#21294d]/50"
                       >
                         <TableCell className="text-slate-200 font-medium">
-                          {tx.user}
+                          {tx.user?.name || "Unknown"}
                         </TableCell>
                         <TableCell className="text-slate-300">
                           {tx.amount} BDT
                         </TableCell>
                         <TableCell>{getBadge(tx.type)}</TableCell>
                         <TableCell className="text-slate-400">
-                          {tx.date}
+                          {new Date(tx.createdAt).toLocaleDateString()}
                         </TableCell>
                       </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TabsContent>
-            ))}
+                    ))
+                  )}
+                </TableBody>
+              </Table>
+
+              {/* ✅ Pagination */}
+              {totalPages > 1 && (
+                <div className="mt-4 flex justify-center">
+                  <Pagination>
+                    <PaginationContent>
+                      <PaginationItem>
+                        <PaginationPrevious
+                          onClick={() => setPage((p) => Math.max(p - 1, 1))}
+                          className={
+                            page === 1 ? "pointer-events-none opacity-50" : ""
+                          }
+                        />
+                      </PaginationItem>
+
+                      {Array.from({ length: totalPages }, (_, i) => (
+                        <PaginationItem key={i}>
+                          <PaginationLink
+                            isActive={page === i + 1}
+                            onClick={() => setPage(i + 1)}
+                          >
+                            {i + 1}
+                          </PaginationLink>
+                        </PaginationItem>
+                      ))}
+
+                      <PaginationItem>
+                        <PaginationNext
+                          onClick={() => setPage((p) => Math.min(p + 1, totalPages))}
+                          className={
+                            page === totalPages
+                              ? "pointer-events-none opacity-50"
+                              : ""
+                          }
+                        />
+                      </PaginationItem>
+                    </PaginationContent>
+                  </Pagination>
+                </div>
+              )}
+            </TabsContent>
           </Tabs>
         </CardContent>
       </Card>

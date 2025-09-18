@@ -1,5 +1,3 @@
-
-
 import { useState } from "react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -7,30 +5,41 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { User, Edit2 } from "lucide-react";
+import { useGetuserQuery, useUpdateProfileMutation } from "@/Redux/features/auth/user.api";
+import { toast } from "sonner";
 
 export default function Profile() {
+  // ✅ Overview API থেকে ডাটা লোড
+  const { data, isLoading, refetch } = useGetuserQuery(undefined);
+  const [updateProfile] = useUpdateProfileMutation();
+console.log(data,"data")
+  const user = data?.data?.user || {};
+  const wallet = data?.data?.wallets?.[0] || {};
+  const summary = data?.data?.summary || {};
+console.log(user,"user")
+console.log(wallet,"wallet")
+console.log(summary,"summary")
+
+  const userId = user?._id;
+console.log(userId,"userId")
   const [open, setOpen] = useState(false);
-  const [user, setUser] = useState({
-    name: "Akash Trasten",
-    email: "akash@example.com",
-    phone: "+8801756984526",
-    address: "Dhaka, Bangladesh",
-    role: "Admin",
-    joined: "2023-01-15",
-    totalTransactions: 125,
-    balance: 12540,
-  });
+  const [formData, setFormData] = useState({ name: "", phone: "" });
 
-  const [formData, setFormData] = useState(user);
-
+  // ফর্ম চেঞ্জ হ্যান্ডলার
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSave = () => {
-    setUser(formData);
+  // সেভ করলে ডাটাবেসে আপডেট হবে
+  const handleSave = async () => {
+    if (!userId) return;
+    await updateProfile({ id: userId, data: formData });
+    await refetch(); 
+        toast.success("✅ Profile updated successfully!");
     setOpen(false);
   };
+
+  if (isLoading) return <p className="text-white">Loading...</p>;
 
   return (
     <div className="p-6 bg-gray-900 min-h-screen text-gray-100 flex flex-col items-center space-y-6">
@@ -47,45 +56,45 @@ export default function Profile() {
 
           {/* User Info */}
           <div className="flex-1 space-y-2">
-            <h2 className="text-3xl font-bold">{user.name}</h2>
-            <p className="text-gray-300">{user.role}</p>
+            <h2 className="text-3xl font-bold">{user?.name}</h2>
+            <p className="text-gray-300">{user?.role}</p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-2 text-sm text-gray-400">
               <div>
-                <span className="font-medium">Email: </span>{user.email}
+                <span className="font-medium">Email: </span>{user?.email}
               </div>
               <div>
-                <span className="font-medium">Phone: </span>{user.phone}
+                <span className="font-medium">Phone: </span>{user?.phone}
               </div>
               <div>
-                <span className="font-medium">Address: </span>{user.address}
-              </div>
-              <div>
-                <span className="font-medium">Joined: </span>{user.joined}
+                <span className="font-medium">Joined: </span>{new Date(user?.createdAt).toLocaleDateString()}
               </div>
             </div>
           </div>
 
           {/* Edit Profile Button */}
           <Button
-            onClick={() => setOpen(true)}
+            onClick={() => {
+              setFormData({ name: user?.name, phone: user?.phone }); // শুধু name আর phone
+              setOpen(true);
+            }}
             className="bg-gradient-to-r from-blue-600 to-blue-800 hover:opacity-90 transition flex items-center gap-2 mt-4 md:mt-0"
           >
             <Edit2 className="w-4 h-4" /> Edit Profile
           </Button>
         </CardHeader>
 
-        {/* Quick Stats */}
+        {/* Quick Stats (Overview API থেকে) */}
         <CardContent className="grid grid-cols-1 sm:grid-cols-3 gap-6 p-6">
           <div className="bg-gray-700/30 p-4 rounded-lg flex flex-col items-center justify-center">
-            <span className="text-xl font-bold text-green-400">৳ {user.balance}</span>
+            <span className="text-xl font-bold text-green-400">৳ {wallet?.balance ?? 0}</span>
             <span className="text-gray-300 text-sm">Balance</span>
           </div>
           <div className="bg-gray-700/30 p-4 rounded-lg flex flex-col items-center justify-center">
-            <span className="text-xl font-bold text-blue-400">{user.totalTransactions}</span>
+            <span className="text-xl font-bold text-blue-400">{summary?.totalTransactions || 0}</span>
             <span className="text-gray-300 text-sm">Total Transactions</span>
           </div>
           <div className="bg-gray-700/30 p-4 rounded-lg flex flex-col items-center justify-center">
-            <span className="text-xl font-bold text-purple-400">Active</span>
+            <span className="text-xl font-bold text-purple-400">{user?.status || "APPROVED"}</span>
             <span className="text-gray-300 text-sm">Status</span>
           </div>
         </CardContent>
@@ -100,19 +109,11 @@ export default function Profile() {
           <div className="space-y-4 py-4">
             <div className="flex flex-col gap-2">
               <Label>Name</Label>
-              <Input name="name" value={formData.name} onChange={handleChange} />
-            </div>
-            <div className="flex flex-col gap-2">
-              <Label>Email</Label>
-              <Input name="email" value={formData.email} onChange={handleChange} />
+              <Input name="name" value={formData?.name || ""} onChange={handleChange} />
             </div>
             <div className="flex flex-col gap-2">
               <Label>Phone</Label>
-              <Input name="phone" value={formData.phone} onChange={handleChange} />
-            </div>
-            <div className="flex flex-col gap-2">
-              <Label>Address</Label>
-              <Input name="address" value={formData.address} onChange={handleChange} />
+              <Input name="phone" value={formData?.phone || ""} onChange={handleChange} />
             </div>
           </div>
           <DialogFooter>

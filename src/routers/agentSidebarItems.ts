@@ -1,6 +1,7 @@
 import AddMoney from "@/components/pages/Agent/AddMoney";
 import Overviewagent from "@/components/pages/Agent/Overviewagent";
 import Profile from "@/components/pages/Agent/Profile";
+
 import Transactionsagent from "@/components/pages/Agent/Transactionsagent";
 import WithdrawMoney from "@/components/pages/Agent/WithdrawMoney";
 import type { ISidebarItem } from "@/Types";
@@ -29,25 +30,25 @@ export const agentSidebarItems: ISidebarItem[] = [
     title: "Wallet Operations",
     items: [
       {
-        title: "Add Money",
+        title: " Cash-In",
         url: "/agent/add-money",
         component: AddMoney,
         icon: Wallet,
       },
       {
-        title: "Withdraw Money",
+        title: "Cash-Out",
         url: "/agent/withdraw-money",
         component: WithdrawMoney,
         icon: ArrowDownToLine,
       },
       {
-        title: "Transactions",
+        title: "Transactions History",
         url: "/agent/transactions",
         component: Transactionsagent,
         icon: ReceiptText,
       },
       {
-        title: "Profile & Settings",
+        title: "Profile ",
         url: "/agent/settings",
         component: Profile,
         icon: SettingsIcon,

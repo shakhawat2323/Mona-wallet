@@ -1,7 +1,6 @@
-"use client";
 
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import {
   Card,
   CardContent,
@@ -10,35 +9,44 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { CheckCircle2 } from "lucide-react";
+
+
+
+import { useAddmoneyMutation, useGetuserQuery } from "@/Redux/features/auth/user.api";
+import { toast } from "sonner";
 
 export default function Deposit() {
   const [amount, setAmount] = useState("");
-  const [note, setNote] = useState("");
-  const [history, setHistory] = useState<
-    { amount: string; note: string; status: string; id: number }[]
-  >([
 
-  ]);
 
-  const handleDeposit = () => {
-    if (!amount) return alert("⚠️ Please enter an amount!");
-    const newTransaction = {
-      id: Date.now(),
-      amount,
-      note: note || "No note",
-      status: "Success",
-    };
-    setHistory([newTransaction, ...history].slice(0, 5));
-    setAmount("");
-    setNote("");
+  // redux থেকে user এর email নিয়ে আসবো
+
+  const { data } = useGetuserQuery(undefined);
+  
+  const user = data?.data;
+  console.log(user?.user?.email)
+
+  const [addMoney, { isLoading }] = useAddmoneyMutation();
+
+  const handleDeposit = async () => {
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const res: any = await addMoney({
+        email: user?.user?.email, 
+        amount: Number(amount),
+      }).unwrap();
+      setAmount("");
+      console.log(res)
+      toast("Deposit Successful ✅")
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      console.error(error);
+      toast( "Deposit Failed ❌")
+    }
   };
 
   return (
-    <div className=" bg-gray-950 text-gray-100 flex flex-col">
-
-
-      {/* Main Content */}
+    <div className="bg-gray-950 text-gray-100 flex flex-col">
       <main className="flex-1 flex items-center justify-center">
         <motion.div
           initial={{ opacity: 0, y: 40 }}
@@ -54,10 +62,7 @@ export default function Deposit() {
             </CardHeader>
             <CardContent className="space-y-6 pt-6">
               {/* Amount Input */}
-              <motion.div
-                whileHover={{ scale: 1.01 }}
-                className="space-y-2"
-              >
+              <motion.div whileHover={{ scale: 1.01 }} className="space-y-2">
                 <label className="text-sm font-medium text-gray-300">
                   Amount (৳)
                 </label>
@@ -70,61 +75,19 @@ export default function Deposit() {
                 />
               </motion.div>
 
-              {/* Note Input */}
-              <motion.div
-                whileHover={{ scale: 1.01 }}
-                className="space-y-2"
-              >
-                <label className="text-sm font-medium text-gray-300">
-                  Note (optional)
-                </label>
-                <Input
-                  type="text"
-                  placeholder="Write a note..."
-                  value={note}
-                  onChange={(e) => setNote(e.target.value)}
-                  className="bg-gray-950 border-gray-800 text-white focus-visible:ring-blue-500"
-                />
-              </motion.div>
-
+       
               {/* Deposit Button */}
               <motion.div whileTap={{ scale: 0.97 }}>
                 <Button
                   onClick={handleDeposit}
+                  disabled={isLoading}
                   className="w-full bg-gradient-to-r from-blue-600 to-blue-800 text-white font-semibold hover:opacity-90 shadow-lg"
                 >
-                  🚀 Deposit Now
+                  {isLoading ? "Processing..." : "🚀 Deposit Now"}
                 </Button>
               </motion.div>
 
-              {/* Recent Deposit History */}
-              <div className="pt-6 border-t border-gray-800">
-                <h3 className="text-sm font-semibold text-gray-300 mb-3">
-                  Recent Deposits
-                </h3>
-                <ul className="space-y-2 text-sm">
-                  <AnimatePresence>
-                    {history.map((item) => (
-                      <motion.li
-                        key={item.id}
-                        initial={{ opacity: 0, x: -30 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: 30 }}
-                        transition={{ duration: 0.3 }}
-                        className="flex justify-between items-center bg-gray-800/50 px-3 py-2 rounded-lg border border-gray-700"
-                      >
-                        <div>
-                          <span className="font-medium">৳ {item.amount}</span>{" "}
-                          <span className="text-gray-400">- {item.note}</span>
-                        </div>
-                        <span className="flex items-center gap-1 text-green-400 font-medium">
-                          <CheckCircle2 className="w-4 h-4" /> {item.status}
-                        </span>
-                      </motion.li>
-                    ))}
-                  </AnimatePresence>
-                </ul>
-              </div>
+      
             </CardContent>
           </Card>
         </motion.div>

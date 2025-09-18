@@ -46,7 +46,7 @@ export default function Verify() {
   const [sendOtp] = useSendOtpMutation();
   const [verifyOtp] = useVerifyOtpMutation();
   const [timer, setTimer] = useState(5);
-console.log(location.state)
+console.log(location)
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {

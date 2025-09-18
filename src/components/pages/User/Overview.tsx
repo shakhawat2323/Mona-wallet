@@ -5,13 +5,19 @@ import {
   Wallet,
   Send,
   Activity,
+  PlusCircle,
+  ArrowUpCircle,
+  ArrowDownCircle,
 
 } from "lucide-react";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
+import { Link } from "react-router";
 
 export default function Overview() {
   const { data } = useGetuserQuery(undefined);
+  
   const user = data?.data;
+  console.log(user?.user?.email)
 
   const wallet = user?.wallets?.[0];
   const transactions = user?.transactions || [];
@@ -141,6 +147,24 @@ export default function Overview() {
             </li>
           ))}
         </ul>
+      </section>
+         {/* ✅ Quick Actions */}
+      <section className="bg-gray-800 rounded-2xl p-6 shadow-md">
+        <h2 className="text-xl font-semibold mb-4">Quick Actions</h2>
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+          <Link to="/user/deposit" className="flex cursor-pointer flex-col items-center p-4 rounded-lg bg-blue-600/30 hover:bg-blue-600/50 transition">
+            <PlusCircle className="w-6 h-6 mb-2 text-blue-400" />
+            <span className="text-sm">Add Funds</span>
+          </Link>
+          <Link to="/user/send-money" className="flex cursor-pointer flex-col items-center p-4 rounded-lg bg-green-600/30 hover:bg-green-600/50 transition">
+            <ArrowUpCircle className="w-6 h-6 mb-2 text-green-400" />
+            <span className="text-sm">Send Money</span>
+          </Link>
+          <Link  to="/user/withdraw" className="flex cursor-pointer flex-col items-center p-4 rounded-lg bg-amber-600/30 hover:bg-amber-600/50 transition">
+            <ArrowDownCircle className="w-6 h-6 mb-2 text-amber-400" />
+            <span className="text-sm">Withdraw</span>
+          </Link>
+        </div>
       </section>
 
       {/* ✅ Spending Overview */}
