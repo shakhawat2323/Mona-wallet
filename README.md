@@ -20,7 +20,7 @@ A secure, scalable, and role-based backend API for a **Mona Wallet System** (sim
 
 ## 🚀 Live Demo
 
-🔗 **Live API**: [Mona Wallet](https://mona-wallet.vercel.app)
+🔗 **Live API**: [Mona Wallet](https://mona-wallet.netlify.app)
 
 ---
 
