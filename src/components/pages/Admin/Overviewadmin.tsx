@@ -13,11 +13,12 @@ import {
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { useGetUserStatsQuery } from "@/Redux/features/auth/admin.api";
+import Loding from "../Agent/Loding";
 
 
 
 export default function Overview() {
-  const {data}=useGetUserStatsQuery(undefined)
+  const {data ,isLoading }=useGetUserStatsQuery(undefined)
 console.log(data)
   const stats = [
     {
@@ -87,6 +88,10 @@ console.log(data)
       trend: "up",
     },
   ];
+
+   if(isLoading){
+      <Loding/>
+    }
 
   return (
     <div className="p-6 space-y-8">

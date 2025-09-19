@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { baseApi } from "@/Redux/baseApi";
 
 const adminApi = baseApi.injectEndpoints({
@@ -22,7 +23,7 @@ const adminApi = baseApi.injectEndpoints({
         url: `/admin/block/${id}`,
         method: "PATCH",
       }),
-      invalidatesTags: ["UserStats"], // refresh stats after block
+      invalidatesTags: ["UserStats"],
     }),
 
     unblockWallet: builder.mutation({
@@ -30,7 +31,15 @@ const adminApi = baseApi.injectEndpoints({
         url: `/admin/unblock/${id}`,
         method: "PATCH",
       }),
-      invalidatesTags: ["UserStats"], // refresh stats after unblock
+      invalidatesTags: ["UserStats"],
+    }),
+    usertoagent: builder.mutation<any, { id: string; role: string }>({
+      query: ({ id, role }) => ({
+        url: `/user/${id}`,
+        method: "PATCH",
+        data: { role },
+      }),
+      invalidatesTags: ["UserStats"],
     }),
     blockAgent: builder.mutation({
       query: (id: string) => ({
@@ -72,4 +81,5 @@ export const {
   useUnblockAgentMutation,
   useGetAgentsQuery,
   useGetTransactionsQuery,
+  useUsertoagentMutation,
 } = adminApi;

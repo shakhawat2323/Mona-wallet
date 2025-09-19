@@ -63,7 +63,7 @@ const LogOuthandel = async () => {
           <Popover>
             <PopoverTrigger asChild>
               <Button
-                className="group size-8 md:hidden"
+                className="group size-8 cursor-pointer md:hidden"
                 variant="ghost"
                 size="icon"
               >
@@ -89,7 +89,7 @@ const LogOuthandel = async () => {
                   />
                   <path
                     d="M4 12H20"
-                    className="origin-center translate-y-[7px] transition-all duration-300 ease-[cubic-bezier(.5,.85,.25,1.1)] group-aria-expanded:translate-y-0 group-aria-expanded:rotate-[135deg]"
+                    className="origin-center cursor-pointer  translate-y-[7px] transition-all duration-300 ease-[cubic-bezier(.5,.85,.25,1.1)] group-aria-expanded:translate-y-0 group-aria-expanded:rotate-[135deg]"
                   />
                 </svg>
               </Button>
@@ -152,7 +152,7 @@ const LogOuthandel = async () => {
                       <NavigationMenuItem key={index}>
                         <NavigationMenuLink
                           asChild
-                          className="text-muted-foreground hover:text-primary py-1.5 font-medium"
+                          className="text-muted-foreground cursor-pointer hover:text-primary py-1.5 font-medium"
                         >
                           <Link to={link.href}>{link.label}</Link>
                         </NavigationMenuLink>
@@ -166,9 +166,9 @@ const LogOuthandel = async () => {
         </div>
         {/* Right side */}
         <div className="flex items-center gap-2">
-        {  data?.data?.email && <Button onClick={LogOuthandel} className="text-sm cursor-pointer" >
+       {  data?.data?.email && <Button onClick={LogOuthandel} className="text-sm cursor-pointer" >
          Logout
-        </Button>}
+        </Button>} 
        {
         !data?.data?.email &&   <Button  className="text-sm cursor-pointer">
             <Link to="/login"> Sign In</Link>

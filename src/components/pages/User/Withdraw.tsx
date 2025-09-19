@@ -14,6 +14,7 @@ import { Loader2, ArrowDownCircle } from "lucide-react";
 
 import { toast } from "sonner";
 import { useGetuserQuery, useWithdrawMutation } from "@/Redux/features/auth/user.api";
+import Loding from "../Agent/Loding";
 
 export default function Withdraw() {
   const [amount, setAmount] = useState("");
@@ -40,9 +41,12 @@ export default function Withdraw() {
     } catch (error: any) {
       console.error(error);
 
-         toast.error("Withdraw Failed ❌")
+    toast.error("Withdraw Failed ❌")
     }
   };
+   if(isLoading){
+      <Loding/>
+    }
 
   return (
     <div className="p-6 bg-gray-900 text-gray-100 flex items-center justify-center">
@@ -72,7 +76,7 @@ export default function Withdraw() {
           <Button
             onClick={handleWithdraw}
             disabled={isLoading}
-            className="w-full bg-gradient-to-r from-red-600 to-red-800 text-white font-semibold py-2 rounded-lg hover:opacity-90 transition"
+            className="w-full bg-gradient-to-r cursor-pointer from-red-600 to-red-800 text-white font-semibold py-2 rounded-lg hover:opacity-90 transition"
           >
             {isLoading ? (
               <Loader2 className="w-5 h-5 animate-spin mr-2" />

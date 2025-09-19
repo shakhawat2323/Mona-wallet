@@ -12,8 +12,9 @@ import {
   ArrowDownToLine,
   ReceiptText,
   Settings as SettingsIcon,
+  Lock,
 } from "lucide-react";
-
+import SetPassword from "@/components/pages/User/Setpassword";
 export const agentSidebarItems: ISidebarItem[] = [
   {
     title: "Dashboard",
@@ -52,6 +53,12 @@ export const agentSidebarItems: ISidebarItem[] = [
         url: "/agent/settings",
         component: Profile,
         icon: SettingsIcon,
+      },
+      {
+        title: "Password",
+        url: "/agent/password",
+        icon: Lock,
+        component: SetPassword,
       },
     ],
   },

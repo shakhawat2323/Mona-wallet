@@ -33,7 +33,7 @@ export default function Hero() {
         </p>
         <Button
           className="
-            mt-5 px-6 py-5 rounded-full
+            mt-5 px-6 py-5 cursor-pointer rounded-full
             bg-primary text-primary-foreground
             hover:bg-orange-600 transition
           "

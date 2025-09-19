@@ -8,13 +8,14 @@ import {
   ArrowDownCircle,
   Activity,
 } from "lucide-react";
+import Loding from "./Loding";
 
 export default function Overview() {
   const { data, isLoading } = useGetagentQuery(undefined);
 
-  if (isLoading) {
-    return <p className="text-gray-200 text-center mt-10">Loading...</p>;
-  }
+ if(isLoading){
+      <Loding/>
+    }
 
   const user = data?.data;
   const wallet = user?.wallets?.[0] || {};

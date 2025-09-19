@@ -14,6 +14,7 @@ import { Loader2, Send } from "lucide-react";
 import { toast } from "sonner";
 
 import { useSendMoneyMutation } from "@/Redux/features/auth/user.api";
+import Loding from "../Agent/Loding";
 
 export default function SendMoney() {
   const [receiverEmail, setReceiverEmail] = useState("");
@@ -41,6 +42,10 @@ export default function SendMoney() {
       toast.error(error?.data?.message || "Failed to Send Money ❌");
     }
   };
+
+   if(isLoading){
+      <Loding/>
+    }
 
   return (
     <div className="p-6 bg-gray-900 text-gray-100 flex items-center justify-center">
@@ -81,7 +86,7 @@ export default function SendMoney() {
           <Button
             onClick={handleSend}
             disabled={isLoading}
-            className="w-full bg-gradient-to-r from-purple-600 to-purple-800 text-white font-semibold py-2 rounded-lg hover:opacity-90 transition"
+            className="w-full bg-gradient-to-r cursor-pointer from-purple-600 to-purple-800 text-white font-semibold py-2 rounded-lg hover:opacity-90 transition"
           >
             {isLoading ? (
               <Loader2 className="w-5 h-5 animate-spin mr-2" />

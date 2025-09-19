@@ -82,7 +82,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                     <SidebarMenuButton asChild>
                       <Link
                         to={item.url}
-                        className="flex items-center gap-2 hover:text-blue-400 transition"
+                        className="flex cursor-pointer items-center gap-2 hover:text-blue-400 transition"
                       >
                         <item.icon className="w-4 h-4" />
                         {item.title}
@@ -106,14 +106,14 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                     <NavLink
                       to={item.url}
                       className={({ isActive }) =>
-                        `flex items-center gap-2 rounded-md px-2 py-1 transition ${
+                        `flex items-center  gap-2 cursor-pointer rounded-md px-2 py-1 transition ${
                           isActive
                             ? `${item.color} font-semibold`
                             : "text-gray-300 hover:text-white"
                         }`
                       }
                     >
-                      <item.icon className={`w-4 h-4 ${item.color}`} />
+                      <item.icon className={`w-4 h-4 cursor-pointer ${item.color}`} />
                       {item.title}
                     </NavLink>
                   </SidebarMenuButton>

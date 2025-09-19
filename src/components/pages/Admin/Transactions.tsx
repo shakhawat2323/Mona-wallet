@@ -34,6 +34,7 @@ import {
 
 import { useState } from "react";
 import { useGetTransactionsQuery } from "@/Redux/features/auth/admin.api";
+import Loding from "../Agent/Loding";
 
 // ✅ Badge helper
 function getBadge(type: string) {
@@ -56,11 +57,11 @@ export default function Transactions() {
   const transactions = data?.data || [];
   const [activeTab, setActiveTab] = useState("All");
 
-  // ✅ প্রতি পেজে ১০টা transaction
+
   const [page, setPage] = useState(1);
   const rowsPerPage = 10;
 
-  // ✅ Tabs
+
   const tabs = ["All", "CASH_IN", "CASH_OUT", "TRANSFER", "WITHDRAW", "DEPOSIT"];
 
   // ✅ Filter transactions by tab
@@ -76,13 +77,9 @@ export default function Transactions() {
     page * rowsPerPage
   );
 
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center h-screen text-slate-300">
-        Loading transactions...
-      </div>
-    );
-  }
+ if(isLoading){
+      <Loding/>
+    }
 
   if (isError) {
     return (
@@ -113,7 +110,7 @@ export default function Transactions() {
                 <TabsTrigger
                   key={tab}
                   value={tab}
-                  className="data-[state=active]:bg-[#2d3b69] data-[state=active]:text-white text-slate-300"
+                  className="data-[state=active]:bg-[#2d3b69] cursor-pointer data-[state=active]:text-white text-slate-300"
                 >
                   {tab === "All" ? "All" : tab.replace("_", " ")}
                 </TabsTrigger>
@@ -128,7 +125,7 @@ export default function Transactions() {
                 </TableCaption>
                 <TableHeader>
                   <TableRow className="border-b border-[#232946]">
-                    <TableHead className="text-slate-300">User</TableHead>
+                
                     <TableHead className="text-slate-300">Amount</TableHead>
                     <TableHead className="text-slate-300">Type</TableHead>
                     <TableHead className="text-slate-300">Date</TableHead>
@@ -150,9 +147,7 @@ export default function Transactions() {
                         key={tx._id}
                         className="border-b border-[#232946] hover:bg-[#21294d]/50"
                       >
-                        <TableCell className="text-slate-200 font-medium">
-                          {tx.user?.name || "Unknown"}
-                        </TableCell>
+              
                         <TableCell className="text-slate-300">
                           {tx.amount} BDT
                         </TableCell>

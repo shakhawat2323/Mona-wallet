@@ -7,9 +7,10 @@ import { Label } from "@/components/ui/label";
 import { User, Edit2 } from "lucide-react";
 import { useGetuserQuery, useUpdateProfileMutation } from "@/Redux/features/auth/user.api";
 import { toast } from "sonner";
+import Loding from "../Agent/Loding";
 
 export default function Profile() {
-  // ✅ Overview API থেকে ডাটা লোড
+
   const { data, isLoading, refetch } = useGetuserQuery(undefined);
   const [updateProfile] = useUpdateProfileMutation();
 console.log(data,"data")
@@ -39,7 +40,9 @@ console.log(userId,"userId")
     setOpen(false);
   };
 
-  if (isLoading) return <p className="text-white">Loading...</p>;
+ if(isLoading){
+      <Loding/>
+    }
 
   return (
     <div className="p-6 bg-gray-900 min-h-screen text-gray-100 flex flex-col items-center space-y-6">
@@ -77,7 +80,7 @@ console.log(userId,"userId")
               setFormData({ name: user?.name, phone: user?.phone }); // শুধু name আর phone
               setOpen(true);
             }}
-            className="bg-gradient-to-r from-blue-600 to-blue-800 hover:opacity-90 transition flex items-center gap-2 mt-4 md:mt-0"
+            className="bg-gradient-to-r cursor-pointer from-blue-600 to-blue-800 hover:opacity-90 transition flex items-center gap-2 mt-4 md:mt-0"
           >
             <Edit2 className="w-4 h-4" /> Edit Profile
           </Button>
@@ -117,7 +120,7 @@ console.log(userId,"userId")
             </div>
           </div>
           <DialogFooter>
-            <Button onClick={handleSave} className="bg-blue-600 hover:bg-blue-700">
+            <Button onClick={handleSave} className="bg-blue-600 cursor-pointer hover:bg-blue-700">
               Save Changes
             </Button>
           </DialogFooter>

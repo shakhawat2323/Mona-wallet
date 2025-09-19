@@ -79,8 +79,8 @@ export default function LoginPage() {
     } catch (err:any) {
       console.error(err);
 
-      if (err.data.message === "Password does not match") {
-        toast.error("Invalid credentials");
+      if (err.data.message === "Incorrect Password") {
+        toast.error("Incorrect Password");
       }
 
       if (err.data.message === "User is not verified") {

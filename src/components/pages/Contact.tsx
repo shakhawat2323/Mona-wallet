@@ -199,7 +199,7 @@ export default function ContactPage() {
                   <Button
                     type="submit"
                     disabled={loading}
-                    className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-8"
+                    className="bg-gradient-to-r cursor-pointer from-purple-500 to-pink-500 text-white px-8"
                   >
                     {loading ? "Sending..." : "Send Message"}
                   </Button>

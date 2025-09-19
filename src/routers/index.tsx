@@ -22,11 +22,13 @@ import { userSidebarItems } from "./userSidebarItems";
 import Unauthorized from "@/components/pages/Unauthorized";
 import { agentSidebarItems } from "./agentSidebarItems";
 import Home from "@/components/pages/Home/Home";
+import Error from "@/components/pages/Error";
 
 export const router = createBrowserRouter([
   {
     Component: App,
     path: "/",
+    errorElement:<Error/>,
     children: [
       {
            

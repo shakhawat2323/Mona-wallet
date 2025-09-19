@@ -12,8 +12,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Loader2, PlusCircle } from "lucide-react";
 import { toast } from "sonner";
-
 import { useAgentCashInMutation } from "@/Redux/features/auth/user.api";
+import Loding from "./Loding";
 
 export default function AgentCashIn() {
   const [userEmail, setUserEmail] = useState("");
@@ -22,6 +22,9 @@ export default function AgentCashIn() {
   const [agentCashIn, { isLoading }] = useAgentCashInMutation();
 
   const handleCashIn = async () => {
+    if(isLoading){
+      <Loding/>
+    }
     if (!userEmail || !amount) {
       return toast.error("⚠️ User email and amount are required!");
     }
@@ -81,10 +84,10 @@ export default function AgentCashIn() {
           <Button
             onClick={handleCashIn}
             disabled={isLoading}
-            className="w-full bg-gradient-to-r from-green-600 to-green-800 text-white font-semibold py-2 rounded-lg hover:opacity-90 transition"
+            className="w-full bg-gradient-to-r cursor-pointer from-green-600 to-green-800 text-white font-semibold py-2 rounded-lg hover:opacity-90 transition"
           >
             {isLoading ? (
-              <Loader2 className="w-5 h-5 animate-spin mr-2" />
+              <Loader2 className="w-5 h-5 animate-spin mr-2 cursor-pointer" />
             ) : (
               "Cash In"
             )}

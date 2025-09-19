@@ -56,10 +56,10 @@ export default function RegistrationSection() {
 
           {/* Buttons */}
           <div className="mt-8 flex gap-4">
-            <Button className="px-6 py-3 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:opacity-90">
+            <Button className="px-6 py-3 cursor-pointer rounded-full bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:opacity-90">
               Register Now
             </Button>
-            <Button className="px-6 py-3 rounded-full border border-purple-500 bg-transparent text-foreground hover:bg-purple-600 hover:text-white">
+            <Button className="px-6 py-3 cursor-pointer rounded-full border border-purple-500 bg-transparent text-foreground hover:bg-purple-600 hover:text-white">
               Learn More
             </Button>
           </div>

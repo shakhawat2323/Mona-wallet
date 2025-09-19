@@ -179,7 +179,7 @@ export default function FeaturesPage() {
             Sign up, verify, and start sending money instantly. Your wallet, your
             freedom.
           </p>
-          <button className="mt-4 w-full px-4 py-2 bg-black/80 rounded-full hover:bg-black transition">
+          <button className="mt-4 w-full cursor-pointer px-4 py-2 bg-black/80 rounded-full hover:bg-black transition">
             Sign Up
           </button>
         </motion.aside>

@@ -103,7 +103,7 @@ export default function TestimonialsSection() {
           <p className="text-gray-600 dark:text-gray-400 mt-3">
             Join thousands of smart users already managing their money with ease.
           </p>
-          <button className="mt-6 px-6 py-3 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:opacity-90 transition">
+          <button className="mt-6 px-6 py-3 cursor-pointer rounded-full bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:opacity-90 transition">
             Get Started
           </button>
         </motion.div>

@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 
 import { useAddmoneyMutation, useGetuserQuery } from "@/Redux/features/auth/user.api";
 import { toast } from "sonner";
+import Loding from "../Agent/Loding";
 
 export default function Deposit() {
   const [amount, setAmount] = useState("");
@@ -44,6 +45,9 @@ export default function Deposit() {
       toast( "Deposit Failed ❌")
     }
   };
+   if(isLoading){
+      <Loding/>
+    }
 
   return (
     <div className="bg-gray-950 text-gray-100 flex flex-col">
@@ -81,7 +85,7 @@ export default function Deposit() {
                 <Button
                   onClick={handleDeposit}
                   disabled={isLoading}
-                  className="w-full bg-gradient-to-r from-blue-600 to-blue-800 text-white font-semibold hover:opacity-90 shadow-lg"
+                  className="w-full bg-gradient-to-r cursor-pointer from-blue-600 to-blue-800 text-white font-semibold hover:opacity-90 shadow-lg"
                 >
                   {isLoading ? "Processing..." : "🚀 Deposit Now"}
                 </Button>

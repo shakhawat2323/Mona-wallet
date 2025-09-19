@@ -18,14 +18,20 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+
 
 import { useState } from "react";
-import { Loader2 } from "lucide-react";
+
 import {
   useBlockWalletMutation,
   useGetUserUserQuery,
   useUnblockWalletMutation,
+  useUsertoagentMutation,
 } from "@/Redux/features/auth/admin.api";
+
+import Loding from "../Agent/Loding";
+import { toast } from "sonner";
 
 const ITEMS_PER_PAGE = 5;
 
@@ -33,6 +39,9 @@ export default function ManageUsers() {
   const { data, isLoading, isError } = useGetUserUserQuery(undefined);
   const [blockWallet] = useBlockWalletMutation();
   const [unblockWallet] = useUnblockWalletMutation();
+  const [usertoagent] = useUsertoagentMutation();
+
+
 
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -46,27 +55,31 @@ export default function ManageUsers() {
   // 👉 Block / Unblock Handle Function
   const handleBlockToggle = async (walletId: string, isBlocked: boolean) => {
     try {
-      console.log("👉 Selected Wallet ID:", walletId);
-
       if (isBlocked) {
         await unblockWallet(walletId).unwrap();
-        console.log("✅ Unblocked Wallet:", walletId);
+        toast.success( "Wallet Unblocked ✅");
       } else {
         await blockWallet(walletId).unwrap();
-        console.log("⛔ Blocked Wallet:", walletId);
+        toast.success( "Wallet Blocked ⛔");
       }
     } catch (err) {
-      console.error("❌ Failed to update status:", err);
+      toast.error( "Failed to update status ❌")
+      console.error(err);
     }
   };
 
-  if (isLoading) {
-    return (
-      <div className="flex justify-center items-center h-screen text-white">
-        <Loader2 className="animate-spin mr-2" /> Loading users...
-      </div>
-    );
-  }
+  // 👉 Role Update Function
+  const handleRoleChange = async (id: string, role: string) => {
+    try {
+      await usertoagent({ id, role }).unwrap();
+      toast.success( `User role updated to ${role} ✅`);
+    } catch (err) {
+      toast.error("Failed to update role ❌");
+      console.error(err);
+    }
+  };
+
+  if (isLoading) return <Loding />;
 
   if (isError) {
     return (
@@ -91,14 +104,15 @@ export default function ManageUsers() {
               <TableRow className="border-b border-[#232946]">
                 <TableHead className="text-slate-300">Name</TableHead>
                 <TableHead className="text-slate-300">Email</TableHead>
+                <TableHead className="text-slate-300">Role</TableHead>
                 <TableHead className="text-slate-300">Status</TableHead>
                 <TableHead className="text-slate-300">Action</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {paginatedUsers.map((user: any) => {
-                const walletId = user.wallets?.[0]; // ✅ প্রথম wallet ID
-                const isBlocked = user.status === "BLOCKED"; // বা backend থেকে আলাদা field হলে সেটা use করো
+                const walletId = user.wallets?.[0];
+                const isBlocked = user.status === "BLOCKED";
 
                 return (
                   <TableRow
@@ -111,6 +125,25 @@ export default function ManageUsers() {
                     <TableCell className="text-slate-300">
                       {user.email}
                     </TableCell>
+
+                    {/* ✅ Role Select */}
+                    <TableCell>
+                      <Select
+                        defaultValue={user.role || "USER"}
+                        onValueChange={(value) =>
+                          handleRoleChange(user._id, value)
+                        }
+                      >
+                        <SelectTrigger className="w-[120px] bg-[#21294d] text-slate-200">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="USER">USER</SelectItem>
+                          <SelectItem value="AGENT">AGENT</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </TableCell>
+
                     <TableCell>
                       {isBlocked ? (
                         <Badge className="bg-red-600/20 text-red-400">
@@ -125,7 +158,7 @@ export default function ManageUsers() {
                     <TableCell>
                       <Button
                         size="sm"
-                        disabled={!walletId} // যদি wallet না থাকে
+                        disabled={!walletId}
                         onClick={() =>
                           handleBlockToggle(walletId, isBlocked)
                         }

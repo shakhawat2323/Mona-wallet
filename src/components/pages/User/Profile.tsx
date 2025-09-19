@@ -1,43 +1,94 @@
+
 import { useState } from "react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { User, Edit2 } from "lucide-react";
+import { User, Edit2 ,EyeOff,Eye} from "lucide-react";
 import { useUpdateProfileMutation, useGetuserQuery } from "@/Redux/features/auth/user.api";
+import { useSetPasswordMutation } from "@/Redux/features/auth/auth.api";
 import { toast } from "sonner";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import Loding from "../Agent/Loding";
+
+// 🔒 Password Validation
+const passwordSchema = z
+  .object({
+    password: z
+      .string({ error: "Password is required" })
+      .min(8, { message: "Password must be at least 8 characters long." })
+      .regex(/^(?=.*[A-Z])/, { message: "Must contain 1 uppercase letter." })
+      .regex(/^(?=.*[!@#$%^&*])/, { message: "Must contain 1 special character." })
+      .regex(/^(?=.*\d)/, { message: "Must contain 1 number." }),
+    confirmPassword: z.string({ error: "Confirm password is required" }),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords don't match",
+    path: ["confirmPassword"],
+  });
+
+type PasswordFormValues = z.infer<typeof passwordSchema>;
 
 export default function Profile() {
-  // ✅ Overview API থেকে ডাটা লোড
   const { data, isLoading, refetch } = useGetuserQuery(undefined);
   const [updateProfile] = useUpdateProfileMutation();
+  const [setPassword] = useSetPasswordMutation();
 
   const user = data?.data?.user || {};
   const wallet = data?.data?.wallets?.[0] || {};
   const summary = data?.data?.summary || {};
-
   const userId = user?._id;
 
-  const [open, setOpen] = useState(false);
+  const googledata = user?.auths?.[0]?.provider;
+
+  const [editOpen, setEditOpen] = useState(false);
+  const [passwordOpen, setPasswordOpen] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
   const [formData, setFormData] = useState({ name: "", phone: "" });
 
-  // ফর্ম চেঞ্জ হ্যান্ডলার
+  const passwordForm = useForm<PasswordFormValues>({
+    resolver: zodResolver(passwordSchema),
+    defaultValues: { password: "", confirmPassword: "" },
+  });
+
+  // Profile Handlers
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // সেভ করলে ডাটাবেসে আপডেট হবে
   const handleSave = async () => {
     if (!userId) return;
     await updateProfile({ id: userId, data: formData });
-    await refetch(); 
-        toast.success("✅ Profile updated successfully!");
-    setOpen(false);
+    await refetch();
+    toast.success("✅ Profile updated successfully!");
+    setEditOpen(false);
   };
 
-  if (isLoading) return <p className="text-white">Loading...</p>;
+  const handlePasswordSave = async (values: PasswordFormValues) => {
+    try {
+      if (!userId) return;
+      await setPassword({ id: userId, password: values.password }).unwrap();
+      toast.success("✅ Password updated successfully!");
+      passwordForm.reset();
+      setPasswordOpen(false);
+    } catch {
+      toast.error("❌ Failed to update password");
+    }
+  };
 
+  if(isLoading){
+      <Loding/>
+    }
   return (
     <div className="p-6 bg-gray-900 min-h-screen text-gray-100 flex flex-col items-center space-y-6">
       {/* Profile Card */}
@@ -56,31 +107,37 @@ export default function Profile() {
             <h2 className="text-3xl font-bold">{user?.name}</h2>
             <p className="text-gray-300">{user?.role}</p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-2 text-sm text-gray-400">
-              <div>
-                <span className="font-medium">Email: </span>{user?.email}
-              </div>
-              <div>
-                <span className="font-medium">Phone: </span>{user?.phone}
-              </div>
-              <div>
-                <span className="font-medium">Joined: </span>{new Date(user?.createdAt).toLocaleDateString()}
-              </div>
+              <div><span className="font-medium">Email: </span>{user?.email}</div>
+              <div><span className="font-medium">Phone: </span>{user?.phone}</div>
+              <div><span className="font-medium">Joined: </span>{new Date(user?.createdAt).toLocaleDateString()}</div>
             </div>
           </div>
 
-          {/* Edit Profile Button */}
-          <Button
-            onClick={() => {
-              setFormData({ name: user?.name, phone: user?.phone }); // শুধু name আর phone
-              setOpen(true);
-            }}
-            className="bg-gradient-to-r from-blue-600 to-blue-800 hover:opacity-90 transition flex items-center gap-2 mt-4 md:mt-0"
-          >
-            <Edit2 className="w-4 h-4" /> Edit Profile
-          </Button>
+          {/* Buttons */}
+          <div className="flex flex-col gap-2 mt-4 md:mt-0">
+            <Button
+              onClick={() => {
+                setFormData({ name: user?.name, phone: user?.phone });
+                setEditOpen(true);
+              }}
+              className="bg-gradient-to-r cursor-pointer from-blue-600 to-blue-800 hover:opacity-90 transition flex items-center gap-2"
+            >
+              <Edit2 className="w-4 h-4" /> Edit Profile
+            </Button>
+
+            {/* Conditional Set Password */}
+            {googledata === "google" && (
+              <Button
+                onClick={() => setPasswordOpen(true)}
+                className="bg-gradient-to-r cursor-pointer from-purple-600 to-purple-800 hover:opacity-90 transition flex items-center gap-2"
+              >
+                <Eye  className="w-4 h-4" /> Set Password
+              </Button>
+            )}
+          </div>
         </CardHeader>
 
-        {/* Quick Stats (Overview API থেকে) */}
+        {/* Quick Stats */}
         <CardContent className="grid grid-cols-1 sm:grid-cols-3 gap-6 p-6">
           <div className="bg-gray-700/30 p-4 rounded-lg flex flex-col items-center justify-center">
             <span className="text-xl font-bold text-green-400">৳ {wallet?.balance ?? 0}</span>
@@ -98,7 +155,7 @@ export default function Profile() {
       </Card>
 
       {/* Edit Profile Modal */}
-      <Dialog open={open} onOpenChange={setOpen}>
+      <Dialog open={editOpen} onOpenChange={setEditOpen}>
         <DialogContent className="bg-gray-800 text-gray-100 border border-gray-700">
           <DialogHeader>
             <DialogTitle className="text-xl">Edit Profile</DialogTitle>
@@ -114,12 +171,83 @@ export default function Profile() {
             </div>
           </div>
           <DialogFooter>
-            <Button onClick={handleSave} className="bg-blue-600 hover:bg-blue-700">
+            <Button onClick={handleSave} className="bg-blue-600 hover:bg-blue-700 cursor-pointer">
               Save Changes
             </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Set Password Modal */}
+     <Dialog open={passwordOpen} onOpenChange={setPasswordOpen}>
+  <DialogContent className="bg-gray-800 text-gray-100 border border-gray-700">
+    <DialogHeader>
+      <DialogTitle className="text-xl">Set Password</DialogTitle>
+    </DialogHeader>
+    <form
+      onSubmit={passwordForm.handleSubmit(handlePasswordSave)}
+      className="space-y-4 py-4"
+    >
+      {/* Password Field */}
+      <div className="flex flex-col gap-2 relative">
+        <Label>Password</Label>
+        <Input
+          type={showPassword ? "text" : "password"}
+          {...passwordForm.register("password")}
+        />
+        <button
+          type="button"
+          className="absolute cursor-pointer right-3 top-9 text-gray-400 hover:text-white"
+          onClick={() => setShowPassword((prev) => !prev)}
+        >
+          {showPassword ? (
+            <EyeOff className="w-5 h-5" />
+          ) : (
+            <Eye className="w-5 h-5" />
+          )}
+        </button>
+        <p className="text-red-400 cursor-pointer text-sm">
+          {passwordForm.formState.errors.password?.message}
+        </p>
+      </div>
+
+      {/* Confirm Password Field */}
+      <div className="flex flex-col gap-2 relative">
+        <Label>Confirm Password</Label>
+        <Input
+          type={showConfirm ? "text" : "password"}
+          {...passwordForm.register("confirmPassword")}
+        />
+        <button
+          type="button"
+          className="absolute cursor-pointer right-3 top-9 text-gray-400 hover:text-white"
+          onClick={() => setShowConfirm((prev) => !prev)}
+        >
+          {showConfirm ? (
+            <EyeOff className="w-5 h-5" />
+          ) : (
+            <Eye className="w-5 h-5" />
+          )}
+        </button>
+        <p className="text-red-400 text-sm">
+          {passwordForm.formState.errors.confirmPassword?.message}
+        </p>
+      </div>
+
+      {/* Submit Button */}
+      <DialogFooter>
+        {googledata === "google" && (
+          <Button
+            type="submit"
+            className="bg-purple-600 cursor-pointer hover:bg-purple-700 w-full"
+          >
+            Set Password
+          </Button>
+        )}
+      </DialogFooter>
+    </form>
+  </DialogContent>
+</Dialog>
     </div>
   );
 }

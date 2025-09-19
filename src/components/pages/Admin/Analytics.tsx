@@ -17,18 +17,17 @@ import {
 } from "recharts";
 import { Card, CardHeader, CardContent, CardTitle } from "@/components/ui/card";
 import { useGetUserStatsQuery } from "@/Redux/features/auth/admin.api";
+import Loding from "../Agent/Loding";
 
 const COLORS = ["#4ade80", "#f87171", "#60a5fa", "#fbbf24", "#a78bfa", "#34d399"];
 
 export default function DashboardCharts() {
   const { data, isLoading } = useGetUserStatsQuery(undefined);
-  if (isLoading) return <p className="text-white">Loading...</p>;
-
+ if(isLoading){
+      <Loding/>
+    }
   const stats = data?.data || {};
 
-  // ✅ Radial Chart Data (Active vs Total Users)
-
-  // ✅ Donut Chart Data (Wallets + Agents + Transactions)
   const donutData = [
     { name: "Approved Agents", value: stats.approvedAgents },
     { name: "Suspended Agents", value: stats.suspendedAgents },
@@ -39,13 +38,12 @@ export default function DashboardCharts() {
     { name: "Total Agents", value: stats.usersByRole?.find((r:any) => r._id === "AGENT")?.count || 0 },
   ];
 
-  // ✅ Pie Chart Data (Role Distribution)
+
   const roleData = stats.usersByRole?.map((r:any) => ({
     name: r._id,
     value: r.count,
   })) || [];
 
-  // ✅ Line Chart Data (Transaction Volume - এখানে demo date ধরলাম)
   const volumeData = [
     { month: "Jan", value: stats.transactionVolume * 0.2 },
     { month: "Feb", value: stats.transactionVolume * 0.3 },
@@ -59,7 +57,6 @@ export default function DashboardCharts() {
   return (
     <div className="grid lg:grid-cols-2 gap-6 p-6 bg-gradient-to-tr from-[#0f172a] via-[#1e1b4b] to-[#312e81] min-h-screen text-white">
       
-{/* ✅ Pie / Donut Chart for Active vs Inactive */}
 <Card className="bg-[#181d2f] border-0">
   <CardHeader>
     <CardTitle className="text-white text-sm">Active vs Inactive Users</CardTitle>

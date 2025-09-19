@@ -194,7 +194,7 @@ console.log(location)
               </Form>
             </CardContent>
             <CardFooter className="flex justify-center">
-              <Button form="otp-form" type="submit" className="w-full">
+              <Button form="otp-form" type="submit" className="w-full cursor-pointer">
                 Verify OTP
               </Button>
             </CardFooter>
@@ -211,7 +211,7 @@ console.log(location)
               </CardDescription>
             </CardHeader>
             <CardFooter className="flex justify-center">
-              <Button onClick={handleSendOtp} className="w-full">
+              <Button onClick={handleSendOtp} className="w-full cursor-pointer">
                 Send OTP
               </Button>
             </CardFooter>

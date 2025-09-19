@@ -23,7 +23,8 @@ import {
   useBlockAgentMutation,
   useUnblockAgentMutation,
 } from "@/Redux/features/auth/admin.api";
-import { Loader2 } from "lucide-react";
+
+import Loding from "../Agent/Loding";
 
 const ITEMS_PER_PAGE = 5;
 
@@ -56,13 +57,9 @@ export default function ManageAgents() {
     }
   };
 
-  if (isLoading) {
-    return (
-      <div className="flex justify-center items-center h-screen text-white">
-        <Loader2 className="animate-spin mr-2" /> Loading agents...
-      </div>
-    );
-  }
+   if(isLoading){
+        <Loding/>
+      }
 
   if (isError) {
     return (

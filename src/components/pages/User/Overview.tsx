@@ -12,9 +12,10 @@ import {
 } from "lucide-react";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Link } from "react-router";
+import Loding from "../Agent/Loding";
 
 export default function Overview() {
-  const { data } = useGetuserQuery(undefined);
+  const { data ,isLoading } = useGetuserQuery(undefined);
   
   const user = data?.data;
   console.log(user?.user?.email)
@@ -22,10 +23,12 @@ export default function Overview() {
   const wallet = user?.wallets?.[0];
   const transactions = user?.transactions || [];
   const summary = user?.summary || {};
-
+ if(isLoading){
+      <Loding/>
+    }
   return (
     <div className="space-y-10 bg-gray-900 text-gray-100 min-h-screen">
-      {/* ✅ User Profile Section */}
+      {/*  User Profile Section */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between bg-gray-800 rounded-2xl p-6 shadow-md gap-6">
         <div className="flex items-center gap-4">
           <Avatar className="h-16 w-16 ring-2 ring-primary ring-offset-2">
@@ -97,7 +100,7 @@ export default function Overview() {
         </div>
       </div>
 
-      {/* ✅ Top Overview Cards */}
+      {/*  Top Overview Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         <div className="w-full bg-gradient-to-r from-blue-600 to-blue-800 rounded-2xl h-36 flex flex-col items-center justify-center text-white shadow-lg hover:scale-105 transition-transform duration-300">
           <Activity className="w-10 h-10 mb-2" />
@@ -148,7 +151,7 @@ export default function Overview() {
           ))}
         </ul>
       </section>
-         {/* ✅ Quick Actions */}
+         {/*  Quick Actions */}
       <section className="bg-gray-800 rounded-2xl p-6 shadow-md">
         <h2 className="text-xl font-semibold mb-4">Quick Actions</h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
@@ -167,7 +170,7 @@ export default function Overview() {
         </div>
       </section>
 
-      {/* ✅ Spending Overview */}
+      {/*  Spending Overview */}
       <section className="bg-gray-800 rounded-2xl p-6 shadow-md">
         <h2 className="text-xl font-semibold mb-4">Spending Overview</h2>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">

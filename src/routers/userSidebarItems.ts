@@ -1,4 +1,12 @@
-import { Home, Download, Upload, Send, History, User } from "lucide-react";
+import {
+  Home,
+  Download,
+  Upload,
+  Send,
+  History,
+  User,
+  Lock,
+} from "lucide-react";
 
 import Deposit from "@/components/pages/User/Deposit";
 import Withdraw from "@/components/pages/User/Withdraw";
@@ -8,6 +16,7 @@ import Profile from "@/components/pages/User/Profile";
 
 import type { ISidebarItem } from "@/Types";
 import Overview from "@/components/pages/User/Overview";
+import SetPassword from "@/components/pages/User/Setpassword";
 
 export const userSidebarItems: ISidebarItem[] = [
   {
@@ -53,6 +62,12 @@ export const userSidebarItems: ISidebarItem[] = [
         url: "/user/profile",
         icon: User,
         component: Profile,
+      },
+      {
+        title: "Password",
+        url: "/user/password",
+        icon: Lock,
+        component: SetPassword,
       },
     ],
   },

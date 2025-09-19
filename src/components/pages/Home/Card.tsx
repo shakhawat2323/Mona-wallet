@@ -91,7 +91,7 @@ export default function Cards() {
         </p>
         <Button
           className="
-            mt-6 px-6 sm:px-8 py-4 sm:py-5 rounded-full
+            mt-6 px-6 sm:px-8 py-4 cursor-pointer sm:py-5 rounded-full
             bg-primary text-primary-foreground
             hover:bg-purple-700 transition
           "

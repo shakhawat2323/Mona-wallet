@@ -34,6 +34,7 @@ import {
 
 import { useState } from "react";
 import { useGetuserQuery } from "@/Redux/features/auth/user.api";
+import Loding from "../Agent/Loding";
 
 function getBadge(type: string) {
   if (type === "DEPOSIT")
@@ -49,7 +50,7 @@ function getBadge(type: string) {
 }
 
 export default function Transactions() {
-  const { data } = useGetuserQuery(undefined);
+  const { data,isLoading } = useGetuserQuery(undefined);
   const transactions = data?.data?.transactions || [];
 
   const filterByType = (type: string) => {
@@ -74,7 +75,9 @@ export default function Transactions() {
     const end = start + rowsPerPage;
     return list.slice(start, end);
   };
-
+ if(isLoading){
+      <Loding/>
+    }
   return (
     <div className="p-6 bg-gradient-to-tr from-[#181C2F] via-[#232946] to-[#212133] min-h-screen">
       <Card className="bg-[#181d2f] border-0 shadow-lg">
@@ -89,7 +92,7 @@ export default function Transactions() {
                 <TabsTrigger
                   key={tab}
                   value={tab}
-                  className="data-[state=active]:bg-[#2d3b69] data-[state=active]:text-white text-slate-300"
+                  className="data-[state=active]:bg-[#2d3b69] cursor-pointer data-[state=active]:text-white text-slate-300"
                   onClick={() => setPage(1)} // tab বদলালে page reset
                 >
                   {tab}

@@ -77,7 +77,7 @@ console.log(userId,"userId")
               setFormData({ name: user?.name, phone: user?.phone }); // শুধু name আর phone
               setOpen(true);
             }}
-            className="bg-gradient-to-r from-blue-600 to-blue-800 hover:opacity-90 transition flex items-center gap-2 mt-4 md:mt-0"
+            className="bg-gradient-to-r cursor-pointer from-blue-600 to-blue-800 hover:opacity-90 transition flex items-center gap-2 mt-4 md:mt-0"
           >
             <Edit2 className="w-4 h-4" /> Edit Profile
           </Button>
@@ -117,7 +117,7 @@ console.log(userId,"userId")
             </div>
           </div>
           <DialogFooter>
-            <Button onClick={handleSave} className="bg-blue-600 hover:bg-blue-700">
+            <Button onClick={handleSave} className="bg-blue-600 cursor-pointer hover:bg-blue-700">
               Save Changes
             </Button>
           </DialogFooter>
