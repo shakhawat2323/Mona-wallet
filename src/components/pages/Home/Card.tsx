@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { User, CreditCard, TrendingUp, Send } from "lucide-react";
+import { Link } from "react-router";
 
 const features = [
   {
@@ -89,15 +90,15 @@ export default function Cards() {
           future. From payments and transfers to savings and investments —
           everything is secure, reliable, and just a tap away.
         </p>
-        <Button
+        <Link to="/features">  <Button
           className="
             mt-6 px-6 sm:px-8 py-4 cursor-pointer sm:py-5 rounded-full
             bg-primary text-primary-foreground
             hover:bg-purple-700 transition
           "
         >
-          Get Started
-        </Button>
+          Features
+        </Button></Link>
       </motion.div>
     </section>
   );

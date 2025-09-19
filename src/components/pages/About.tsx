@@ -10,6 +10,7 @@ import Team2 from "../../assets/images/Team2.webp";
 import Team3 from "../../assets/images/Team3.webp";
 import Team4 from "../../assets/images/Team4.webp";
 import Phone from "../../assets/images/Phone.webp";
+import { Link } from "react-router";
 
 export default function AboutPage() {
   return (
@@ -39,12 +40,16 @@ export default function AboutPage() {
             </p>
 
             <div className="flex gap-4">
-              <a className="inline-flex items-center px-6 py-3 rounded-full bg-primary text-primary-foreground shadow">
+    
+        
+                <Link to="/register">
+               <a className="inline-flex items-center px-6 py-3 rounded-full bg-primary text-primary-foreground shadow">
                 Create Account
-              </a>
-              <a className="inline-flex items-center px-6 py-3 rounded-full border border-input bg-transparent">
-                Contact Sales
-              </a>
+              </a></Link>
+                <Link to="/contact">
+                      <a className="inline-flex items-center px-6 py-3 rounded-full border border-input bg-transparent">
+                Contact
+              </a></Link>
             </div>
           </motion.div>
 

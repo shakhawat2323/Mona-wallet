@@ -7,6 +7,7 @@ import { Bolt, ShieldCheck, BarChart3, Gift } from "lucide-react";
 import Phone from "../../assets/images/Phone.webp";
 // import Cards from "../../assets/images/Hero.webp";
 import Security from "../../assets/images/Security.png";
+import { Link } from "react-router";
 
 const features = [
   {
@@ -179,9 +180,11 @@ export default function FeaturesPage() {
             Sign up, verify, and start sending money instantly. Your wallet, your
             freedom.
           </p>
-          <button className="mt-4 w-full cursor-pointer px-4 py-2 bg-black/80 rounded-full hover:bg-black transition">
+          <Link to="/register">
+                 <button className="mt-4 w-full cursor-pointer px-4 py-2 bg-black/80 rounded-full hover:bg-black transition">
             Sign Up
-          </button>
+          </button></Link>
+   
         </motion.aside>
 
         {/* SECURITY IMAGE */}

@@ -11,7 +11,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Link, NavLink } from "react-router";
+import { Link } from "react-router";
 import { ModeToggle } from "../DarkAndLightMode/mode-toggle";
 import { authApi, useLogoutMutation, useUserInfoQuery } from "@/Redux/features/auth/auth.api";
 import { useAppDispatch } from "@/Redux/hooks";
@@ -98,21 +98,29 @@ const LogOuthandel = async () => {
               <NavigationMenu className="max-w-none *:w-full">
                 <NavigationMenuList className="flex-col  items-start gap-0 md:gap-2">
                   {navigationLinks.map((link, index) => (
-                    <NavigationMenuItem key={index} className="w-full">
-                      <NavigationMenuLink
-                        href={link.href}
-                        className="py-1.5"
-                      
-                        asChild
-                      >
-                        <NavLink 
-                     
-                      
-           to={link.href}>{link.label}</NavLink>
-  
-                      </NavigationMenuLink>
-                    </NavigationMenuItem>
-                  ))}
+                  < div key={index}>
+                    {link.role === "PUBLIC" && (
+                      <NavigationMenuItem key={index}>
+                        <NavigationMenuLink
+                          asChild
+                          className="text-muted-foreground hover:text-primary py-1.5 font-medium"
+                        >
+                          <Link to={link.href}>{link.label}</Link>
+                        </NavigationMenuLink>
+                      </NavigationMenuItem>
+                    )}
+                    {link.role === data?.data?.role && (
+                      <NavigationMenuItem key={index}>
+                        <NavigationMenuLink
+                          asChild
+                          className="text-muted-foreground cursor-pointer hover:text-primary py-1.5 font-medium"
+                        >
+                          <Link to={link.href}>{link.label}</Link>
+                        </NavigationMenuLink>
+                      </NavigationMenuItem>
+                    )}
+                  </div>
+                ))}
                 </NavigationMenuList>
               </NavigationMenu>
             </PopoverContent>

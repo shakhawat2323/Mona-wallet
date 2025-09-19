@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import PhoneImg from "../../../assets/images/Phone.webp";
+import { Link } from "react-router";
 
 export default function RegistrationSection() {
   return (
@@ -55,13 +56,15 @@ export default function RegistrationSection() {
           </div>
 
           {/* Buttons */}
+       
           <div className="mt-8 flex gap-4">
-            <Button className="px-6 py-3 cursor-pointer rounded-full bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:opacity-90">
+             <Link to="/register">
+             <Button className="px-6 py-3 cursor-pointer rounded-full bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:opacity-90">
               Register Now
-            </Button>
-            <Button className="px-6 py-3 cursor-pointer rounded-full border border-purple-500 bg-transparent text-foreground hover:bg-purple-600 hover:text-white">
+            </Button></Link>
+          <Link to="/about">  <Button className="px-6 py-3 cursor-pointer rounded-full border border-purple-500 bg-transparent text-foreground hover:bg-purple-600 hover:text-white">
               Learn More
-            </Button>
+            </Button></Link>
           </div>
         </motion.div>
 
