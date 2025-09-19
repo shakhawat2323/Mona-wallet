@@ -6,7 +6,7 @@ A secure, scalable, and role-based backend API for a **Mona Wallet System** (sim
 
 ## ✨ Features
 
-- 🔑 **JWT-based Authentication** (User, Agent, Admin roles)
+- 🔑 **JWT-based Authentication** (User, Agent, Admin )
 - 🛡 **Role-based Authorization**
 - 👛 **Automatic Wallet creation** on registration
 - 💸 **Core Financial Operations**: Top-up, Withdraw, Send Money, Cash-in, Cash-out
